@@ -1,7 +1,8 @@
 import ContentCard from "@/components/ContentCard";
 import InfoCard from "@/components/InfoCard";
 import { HeaderTitle } from "@react-navigation/elements";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { router } from "expo-router";
+import { Button, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -21,6 +22,9 @@ export default function HomeScreen() {
           <ScrollView horizontal>
             <ContentCard title="power clean" />
           </ScrollView>
+        </View>
+        <View>
+          <Button title="Login" onPress={() => router.replace("/")} />
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
