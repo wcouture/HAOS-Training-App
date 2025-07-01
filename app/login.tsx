@@ -1,5 +1,6 @@
 import { UserAccount, UserType } from "@/Models/UserAccount";
 import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -19,7 +20,6 @@ export default function Login() {
     };
 
     const payload = JSON.stringify(user);
-    console.log("Login Payload: ", payload);
 
     fetch("http://localhost:5164/user/login", {
       method: "POST",
@@ -29,13 +29,19 @@ export default function Login() {
         Authorization: "HAOSAPIauthorizationToken",
       },
       body: payload,
-    }).then((response) => {
-      console.log(response.status);
-      if (response.status === 200) {
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error("Invalid login credentials.");
+        }
+      })
+      .then((data: UserAccount) => {
+        SecureStore.setItemAsync("user", JSON.stringify(data));
         router.dismissAll();
         router.replace("/home");
-      }
-    });
+      });
   };
 
   return (

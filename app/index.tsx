@@ -1,8 +1,22 @@
 import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { useEffect } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function LandingScreen() {
+  const checkUserAuthentication = async () => {
+    const user = await SecureStore.getItemAsync("user");
+    if (user) {
+      router.dismissAll;
+      router.replace("/home");
+    }
+  };
+
+  useEffect(() => {
+    checkUserAuthentication();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.PageView}>
