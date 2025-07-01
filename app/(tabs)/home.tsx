@@ -1,10 +1,32 @@
 import InfoCard from "@/components/InfoCard";
 import { HeaderTitle } from "@react-navigation/elements";
-import { router } from "expo-router";
-import { Button, ScrollView, StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const loadExerciseData = async () => {
+    fetch("http://localhost:5164/exercises/all", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "HAOSAPIauthorizationToken",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error("Invalid login credentials.");
+        }
+      })
+      .then((data) => console.log(data));
+  };
+
+  useEffect(() => {
+    loadExerciseData();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeAreaView}>
@@ -22,9 +44,7 @@ export default function HomeScreen() {
             <InfoCard title="Power Clean" />
           </ScrollView>
         </View>
-        <View>
-          <Button title="Login" onPress={() => router.replace("/")} />
-        </View>
+        <View></View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
