@@ -1,3 +1,5 @@
+import { TrainingProgram } from "./TrainingProgram";
+
 export enum UserType {
   Admin = 1,
   User = 2,
@@ -9,4 +11,6 @@ export type UserAccount = {
   lastName: string;
   email: string;
   password: string;
+
+  subscribedPrograms: TrainingProgram[];
 };

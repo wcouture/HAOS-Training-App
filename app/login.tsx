@@ -17,6 +17,7 @@ export default function Login() {
       lastName: "",
       email: email,
       password: password,
+      subscribedPrograms: [],
     };
 
     const payload = JSON.stringify(user);

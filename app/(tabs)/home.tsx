@@ -1,4 +1,3 @@
-import ContentCard from "@/components/ContentCard";
 import InfoCard from "@/components/InfoCard";
 import { HeaderTitle } from "@react-navigation/elements";
 import { router } from "expo-router";
@@ -14,13 +13,13 @@ export default function HomeScreen() {
             Upcoming Events
           </HeaderTitle>
           <ScrollView horizontal>
-            <InfoCard />
+            <InfoCard title="USA Gym Tour" />
           </ScrollView>
         </View>
         <View style={styles.sectionContainer}>
           <HeaderTitle style={styles.sectionHeader}>Exercise Demos</HeaderTitle>
           <ScrollView horizontal>
-            <ContentCard title="power clean" />
+            <InfoCard title="Power Clean" />
           </ScrollView>
         </View>
         <View>

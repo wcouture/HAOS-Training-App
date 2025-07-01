@@ -1,6 +1,17 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function InfoCard() {
+type InfoCardParams = {
+  title: string;
+};
+
+export default function InfoCard({ title }: InfoCardParams) {
+  const [_cardTitle, setCardTitle] = useState("");
+
+  useEffect(() => {
+    setCardTitle(title);
+  }, []);
+
   return (
     <View style={styles.CardContainer}>
       <Text style={styles.CardTitle}>USA GYM TOUR</Text>

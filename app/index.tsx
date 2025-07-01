@@ -1,3 +1,4 @@
+import { UserAccount } from "@/Models/UserAccount";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
@@ -5,9 +6,30 @@ import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function LandingScreen() {
+  const updateUserInfo = async (userId: number) => {
+    fetch("http://localhost:5164/user/find/" + userId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "HAOSAPIauthorizationToken",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error("Invalid login credentials.");
+        }
+      })
+      .then((data: UserAccount) => {
+        SecureStore.setItemAsync("user", JSON.stringify(data));
+      });
+  };
+
   const checkUserAuthentication = async () => {
     const user = await SecureStore.getItemAsync("user");
     if (user) {
+      await updateUserInfo(JSON.parse(user).id);
       router.dismissAll;
       router.replace("/home");
     }
