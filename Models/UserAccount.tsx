@@ -1,4 +1,4 @@
-import { TrainingProgram } from "./TrainingProgram";
+import { TrainingProgram } from "./TrainingTypes";
 
 export enum UserType {
   Admin = 1,

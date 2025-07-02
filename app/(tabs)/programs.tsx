@@ -1,6 +1,7 @@
 import ContentCard from "@/components/ContentCard";
-import { TrainingProgram } from "@/Models/TrainingProgram";
+import { TrainingProgram } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
+import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
@@ -13,20 +14,7 @@ export default function Programs() {
 
   const fetchPrograms = async () => {
     const authToken = "HAOSAPIauthorizationToken";
-
-    console.log("user", JSON.stringify(user));
     setPrograms(user.subscribedPrograms);
-
-    // fetch("http://localhost:5164/programs/all", {
-    //   method: "GET",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: authToken,
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => setPrograms(data))
-    //   .catch((error) => console.error(error));
   };
 
   const fetchUserInfo = async () => {
@@ -35,6 +23,13 @@ export default function Programs() {
     if (userData) {
       setUser(JSON.parse(userData));
     }
+  };
+
+  const openProgramDetails = async (program: TrainingProgram) => {
+    router.push({
+      pathname: "/programDetails",
+      params: { id: program.id },
+    });
   };
 
   // Retrieve APIs public RSA key
@@ -58,6 +53,7 @@ export default function Programs() {
               key={program.id}
               title={program.title}
               description={program.subtitle}
+              action={() => openProgramDetails(program)}
             />
           ))}
         </ScrollView>
@@ -90,5 +86,6 @@ const stylesheets = StyleSheet.create({
 
   ProgramList: {
     maxHeight: "100%",
+    width: "80%",
   },
 });

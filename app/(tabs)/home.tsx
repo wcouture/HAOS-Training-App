@@ -20,7 +20,7 @@ export default function HomeScreen() {
           throw new Error("Invalid login credentials.");
         }
       })
-      .then((data) => console.log(data));
+      .then((data) => {});
   };
 
   useEffect(() => {

@@ -77,6 +77,13 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="programDetails"
+        options={{
+          href: null,
+          tabBarShowLabel: false,
+        }}
+      />
     </Tabs>
   );
 }

@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type ContentCardParams = {
   title: string;
   description: string;
+  action: Function;
 };
 
-export default function ContentCard({ title, description }: ContentCardParams) {
+export default function ContentCard({
+  title,
+  description,
+  action,
+}: ContentCardParams) {
   const [_cardTitle, setCardTitle] = useState("");
   const [_cardDescription, setCardDescription] = useState("");
 
@@ -16,10 +21,12 @@ export default function ContentCard({ title, description }: ContentCardParams) {
   }, []);
 
   return (
-    <View style={styles.CardContainer}>
-      <Text style={styles.CardTitle}>{_cardTitle}</Text>
-      <Text style={styles.CardDescription}>{_cardDescription}</Text>
-    </View>
+    <Pressable onPress={() => action()}>
+      <View style={styles.CardContainer}>
+        <Text style={styles.CardTitle}>{_cardTitle}</Text>
+        <Text style={styles.CardDescription}>{_cardDescription}</Text>
+      </View>
+    </Pressable>
   );
 }
 
