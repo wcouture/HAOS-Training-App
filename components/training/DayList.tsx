@@ -1,28 +1,24 @@
-import { ProgramSegment } from "@/Models/TrainingTypes";
+import { ProgramDay } from "@/Models/TrainingTypes";
 import { StyleSheet, View } from "react-native";
 import ContentCard from "../ContentCard";
 
-type SegmentListProps = {
-  segments: ProgramSegment[];
+type DayListParams = {
+  days: ProgramDay[];
   selectAction: Function;
   backAction: Function;
 };
 
-export default function SegmentList({
-  segments,
-  selectAction,
-  backAction,
-}: SegmentListProps) {
+export default function DayList(params: DayListParams) {
   return (
     <View style={stylesheet.container}>
-      <View style={stylesheet.segmentList}>
-        {segments.map((segment) => {
+      <View style={stylesheet.dayList}>
+        {params.days?.map((day, index) => {
           return (
             <ContentCard
-              key={segment.id}
-              title={segment.title}
-              description={segment.subtitle}
-              action={() => selectAction(segment)}
+              key={day.id}
+              title={day.title}
+              description={"Week " + day.weekNum}
+              action={() => params.selectAction(day.id)}
             />
           );
         })}
@@ -39,7 +35,7 @@ const stylesheet = StyleSheet.create({
     width: "100%",
   },
 
-  segmentList: {
+  dayList: {
     width: "80%",
   },
 });

@@ -1,5 +1,10 @@
+import DayList from "@/components/training/DayList";
 import SegmentList from "@/components/training/SegmentList";
-import { TrainingProgram } from "@/Models/TrainingTypes";
+import {
+  ProgramDay,
+  ProgramSegment,
+  TrainingProgram,
+} from "@/Models/TrainingTypes";
 import { useLocalSearchParams } from "expo-router";
 import { JSX, useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
@@ -10,6 +15,19 @@ export default function ProgramDetails() {
   const [programData, setProgramData] = useState<TrainingProgram | null>(null);
   const [headerText, setHeaderText] = useState("");
   const [pageContent, setPageContent] = useState<JSX.Element | null>(null);
+
+  const selectProgramSegment = (segment: ProgramSegment) => {
+    console.log("segmentId: " + segment?.id);
+    console.log("selecting segment: " + segment?.title);
+    setHeaderText(segment?.title as string);
+    setPageContent(
+      <DayList
+        days={segment?.days as ProgramDay[]}
+        selectAction={() => {}}
+        backAction={() => {}}
+      />
+    );
+  };
 
   const loadProgramData = async (id: number) => {
     fetch("http://localhost:5164/programs/find/" + id, {
@@ -31,9 +49,7 @@ export default function ProgramDetails() {
         setHeaderText(data.title);
         setPageContent(
           <SegmentList
-            selectAction={(segmentId: number) => {
-              console.log("selecting segment: " + segmentId);
-            }}
+            selectAction={selectProgramSegment}
             backAction={() => {}}
             segments={data.segments}
           />
