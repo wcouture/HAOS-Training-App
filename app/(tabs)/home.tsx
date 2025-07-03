@@ -14,7 +14,7 @@ export default function HomeScreen() {
       },
     })
       .then((response) => {
-        if (response.status === 200) {
+        if (response.ok) {
           return response.json();
         } else {
           throw new Error("Invalid login credentials.");
