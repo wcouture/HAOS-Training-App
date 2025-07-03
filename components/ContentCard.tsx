@@ -85,6 +85,6 @@ const styles = StyleSheet.create({
   },
 
   Checked: {
-    backgroundColor: "green",
+    backgroundColor: "#0F0",
   },
 });

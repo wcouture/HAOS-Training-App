@@ -4,6 +4,7 @@ import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import ContentCard from "../ContentCard";
+import CompletedWorkoutModal from "./CompleteWorkoutModal";
 
 type WorkoutListParams = {
   workouts: Workout[];
@@ -15,6 +16,54 @@ export default function WorkoutList(params: WorkoutListParams) {
   const [completedWorkouts, setCompletedWorkouts] = useState<
     CompletedWorkout[]
   >([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState<Workout>(
+    {} as Workout
+  );
+
+  const updateCompletedWorkouts = async (workoutId: number) => {
+    const userData = await SecureStore.getItemAsync("user");
+
+    if (userData) {
+      const parsedUser: UserAccount = JSON.parse(userData as string);
+
+      const completedWorkout: CompletedWorkout = {
+        id: 0,
+        workoutId: workoutId,
+        userId: parsedUser.id,
+      };
+
+      const response = await fetch(
+        "http://localhost:5164/userworkouts/add?userId=" + parsedUser.id,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "HAOSAPIauthorizationToken",
+          },
+          body: JSON.stringify(completedWorkout),
+        }
+      );
+
+      if (response.status === 201 || response.status === 200) {
+        console.log("Status good");
+        completedWorkout.id = (await response.json()).id;
+        parsedUser.completedWorkouts.push(completedWorkout);
+
+        await SecureStore.setItemAsync("user", JSON.stringify(parsedUser));
+
+        setCompletedWorkouts(parsedUser.completedWorkouts);
+      } else {
+        console.log(response.status);
+        console.log(response.statusText);
+      }
+
+      console.log("Resetting selectedWorkout");
+      setSelectedWorkout({} as Workout);
+      setModalVisible(false);
+    }
+  };
 
   useEffect(() => {
     SecureStore.getItemAsync("user").then((user) => {
@@ -32,18 +81,31 @@ export default function WorkoutList(params: WorkoutListParams) {
           const completedWorkout = completedWorkouts?.find(
             (cw) => cw.workoutId === workout.id
           );
+          console.log(JSON.stringify(completedWorkouts));
           const completed = completedWorkout ? true : false;
           return (
             <ContentCard
               key={workout.id}
               title={workout.exercise_?.name}
               description={workout.description}
-              action={() => params.selectAction()}
+              action={() => {
+                if (!completed) {
+                  setSelectedWorkout(workout);
+                  setModalVisible(true);
+                }
+              }}
               checked={completed}
             />
           );
         })}
       </View>
+
+      <CompletedWorkoutModal
+        isVisible={modalVisible}
+        setIsVisible={setModalVisible}
+        selectedWorkout={selectedWorkout}
+        onComplete={updateCompletedWorkouts}
+      />
     </View>
   );
 }
