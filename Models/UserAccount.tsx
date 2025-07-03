@@ -13,4 +13,16 @@ export type UserAccount = {
   password: string;
 
   subscribedPrograms: TrainingProgram[];
+  completedWorkouts: CompletedWorkout[];
+
+  completedCircuits: number[];
+  completedDays: number[];
+  completedSegments: number[];
+  completedPrograms: number[];
+};
+
+export type CompletedWorkout = {
+  id: number;
+  workoutId: number;
+  userId: number;
 };

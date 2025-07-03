@@ -1,24 +1,26 @@
-import { ProgramDay } from "@/Models/TrainingTypes";
+import { Circuit } from "@/Models/TrainingTypes";
+import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import ContentCard from "../ContentCard";
 
-type DayListParams = {
-  days: ProgramDay[];
+type CircuitListParams = {
+  circuits: Circuit[];
   selectAction: Function;
   backAction: Function;
 };
 
-export default function DayList(params: DayListParams) {
+export default function CircuitList(params: CircuitListParams) {
+  useEffect(() => {}, []);
   return (
     <View style={stylesheet.container}>
       <View style={stylesheet.dayList}>
-        {params.days?.map((day, index) => {
+        {params.circuits?.map((circuit, index) => {
           return (
             <ContentCard
-              key={day.id}
-              title={"Day " + (index + 1) + ": " + day.title}
-              description={"Week " + day.weekNum}
-              action={() => params.selectAction(day)}
+              key={circuit.id}
+              title={"P" + (index + 1)}
+              description={circuit.description}
+              action={() => params.selectAction(circuit)}
             />
           );
         })}

@@ -18,6 +18,11 @@ export default function Login() {
       email: email,
       password: password,
       subscribedPrograms: [],
+      completedWorkouts: [],
+      completedCircuits: [],
+      completedDays: [],
+      completedSegments: [],
+      completedPrograms: [],
     };
 
     const payload = JSON.stringify(user);

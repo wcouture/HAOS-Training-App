@@ -1,9 +1,13 @@
+import CircuitList from "@/components/training/CircuitList";
 import DayList from "@/components/training/DayList";
 import SegmentList from "@/components/training/SegmentList";
+import WorkoutList from "@/components/training/WorkoutList";
 import {
+  Circuit,
   ProgramDay,
   ProgramSegment,
   TrainingProgram,
+  Workout,
 } from "@/Models/TrainingTypes";
 import { useLocalSearchParams } from "expo-router";
 import { JSX, useEffect, useState } from "react";
@@ -17,12 +21,31 @@ export default function ProgramDetails() {
   const [pageContent, setPageContent] = useState<JSX.Element | null>(null);
 
   const selectProgramSegment = (segment: ProgramSegment) => {
-    console.log("segmentId: " + segment?.id);
-    console.log("selecting segment: " + segment?.title);
     setHeaderText(segment?.title as string);
     setPageContent(
       <DayList
         days={segment?.days as ProgramDay[]}
+        selectAction={selectProgramDay}
+        backAction={() => {}}
+      />
+    );
+  };
+
+  const selectProgramDay = (day: ProgramDay) => {
+    setHeaderText(day?.title as string);
+    setPageContent(
+      <CircuitList
+        circuits={day?.circuits as Circuit[]}
+        selectAction={selectCircuit}
+        backAction={() => {}}
+      />
+    );
+  };
+
+  const selectCircuit = (circuit: Circuit) => {
+    setPageContent(
+      <WorkoutList
+        workouts={circuit?.workouts as Workout[]}
         selectAction={() => {}}
         backAction={() => {}}
       />

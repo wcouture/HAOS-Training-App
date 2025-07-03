@@ -33,7 +33,7 @@ export type Workout = {
   id: number;
   description: string;
   circuitId: number;
-  exercise: Exercise;
+  exercise_: Exercise;
 };
 
 export type Exercise = {
