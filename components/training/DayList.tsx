@@ -1,5 +1,5 @@
 import { ProgramDay } from "@/Models/TrainingTypes";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import ContentCard from "../ContentCard";
 
 type DayListParams = {
@@ -11,6 +11,9 @@ type DayListParams = {
 export default function DayList(params: DayListParams) {
   return (
     <View style={stylesheet.container}>
+      <Pressable onPress={() => params.backAction()}>
+        <Text>Back</Text>
+      </Pressable>
       <View style={stylesheet.dayList}>
         {params.days?.map((day, index) => {
           return (

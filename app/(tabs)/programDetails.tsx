@@ -9,7 +9,9 @@ import {
   TrainingProgram,
   Workout,
 } from "@/Models/TrainingTypes";
+import { UserAccount } from "@/Models/UserAccount";
 import { useLocalSearchParams } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { JSX, useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -48,8 +50,50 @@ export default function ProgramDetails() {
         workouts={circuit?.workouts as Workout[]}
         selectAction={() => {}}
         backAction={() => {}}
+        onFullComplete={() => {
+          completeCircuit(circuit);
+        }}
       />
     );
+  };
+
+  const completeCircuit = async (circuit: Circuit) => {
+    const userData = await SecureStore.getItemAsync("user");
+
+    let user: UserAccount = {} as UserAccount;
+    if (userData) {
+      user = JSON.parse(userData as string);
+      console.log(JSON.stringify(user));
+    }
+
+    if (user?.completedCircuits == null) {
+      user.completedCircuits = [];
+    }
+    if (user?.completedCircuits?.includes(circuit.id)) {
+      console.log("Circuit already complete");
+      return;
+    }
+    const response = await fetch(
+      `http://localhost:5164/circuits/complete/${user?.id}/${circuit?.id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "HAOSAPIauthorizationToken",
+        },
+      }
+    );
+    if (response.ok) {
+      user?.completedCircuits.push(circuit.id);
+      SecureStore.setItemAsync("user", JSON.stringify(user));
+      return response.json();
+    } else {
+      console.log("error");
+      console.log(response.status);
+      console.log(response.statusText);
+      console.log(response.body);
+      console.log(JSON.stringify(response));
+    }
   };
 
   const loadProgramData = async (id: number) => {

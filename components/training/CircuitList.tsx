@@ -1,5 +1,7 @@
 import { Circuit } from "@/Models/TrainingTypes";
-import { useEffect } from "react";
+import { UserAccount } from "@/Models/UserAccount";
+import * as SecureStore from "expo-secure-store";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import ContentCard from "../ContentCard";
 
@@ -10,17 +12,35 @@ type CircuitListParams = {
 };
 
 export default function CircuitList(params: CircuitListParams) {
-  useEffect(() => {}, []);
+  const [completedCircuits, setCompletedCircuits] = useState<number[]>([]);
+
+  useEffect(() => {
+    const getCompletedCircuits = async () => {
+      const userData = await SecureStore.getItemAsync("user");
+
+      if (userData) {
+        const parsedUser: UserAccount = JSON.parse(userData as string);
+        console.log(parsedUser.completedCircuits);
+        setCompletedCircuits(parsedUser.completedCircuits);
+      }
+    };
+    getCompletedCircuits();
+  }, []);
   return (
     <View style={stylesheet.container}>
       <View style={stylesheet.dayList}>
         {params.circuits?.map((circuit, index) => {
+          var circuitComplete = false;
+          if (completedCircuits?.includes(circuit.id)) {
+            circuitComplete = true;
+          }
           return (
             <ContentCard
               key={circuit.id}
               title={"P" + (index + 1)}
               description={circuit.description}
               action={() => params.selectAction(circuit)}
+              checked={circuitComplete}
             />
           );
         })}

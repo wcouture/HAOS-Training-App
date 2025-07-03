@@ -10,6 +10,7 @@ type WorkoutListParams = {
   workouts: Workout[];
   selectAction: Function;
   backAction: Function;
+  onFullComplete: Function;
 };
 
 export default function WorkoutList(params: WorkoutListParams) {
@@ -46,20 +47,31 @@ export default function WorkoutList(params: WorkoutListParams) {
         }
       );
 
-      if (response.status === 201 || response.status === 200) {
-        console.log("Status good");
+      if (response.ok) {
         completedWorkout.id = (await response.json()).id;
         parsedUser.completedWorkouts.push(completedWorkout);
 
         await SecureStore.setItemAsync("user", JSON.stringify(parsedUser));
 
+        var fullComplete = true;
+        for (var i = 0; i < params.workouts.length; i++) {
+          if (
+            !parsedUser.completedWorkouts.find(
+              (cw) => cw.workoutId === params.workouts[i].id
+            )
+          ) {
+            fullComplete = false;
+            break;
+          }
+        }
+        if (fullComplete) {
+          params.onFullComplete();
+        }
+
         setCompletedWorkouts(parsedUser.completedWorkouts);
       } else {
-        console.log(response.status);
-        console.log(response.statusText);
+        console.log("Failed to add completed workout.");
       }
-
-      console.log("Resetting selectedWorkout");
       setSelectedWorkout({} as Workout);
       setModalVisible(false);
     }
@@ -81,7 +93,6 @@ export default function WorkoutList(params: WorkoutListParams) {
           const completedWorkout = completedWorkouts?.find(
             (cw) => cw.workoutId === workout.id
           );
-          console.log(JSON.stringify(completedWorkouts));
           const completed = completedWorkout ? true : false;
           return (
             <ContentCard
