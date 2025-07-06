@@ -10,7 +10,7 @@ import {
   Workout,
 } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { JSX, useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
@@ -22,40 +22,59 @@ export default function ProgramDetails() {
   const [headerText, setHeaderText] = useState("");
   const [pageContent, setPageContent] = useState<JSX.Element | null>(null);
 
+  const _itemSelections = {
+    segment: null as ProgramSegment | null,
+    day: null as ProgramDay | null,
+    circuit: null as Circuit | null,
+  };
+
   const selectProgramSegment = (segment: ProgramSegment) => {
+    _itemSelections.segment = segment;
     setHeaderText(segment?.title as string);
     setPageContent(
       <DayList
         days={segment?.days as ProgramDay[]}
         selectAction={selectProgramDay}
-        backAction={() => {}}
+        backAction={() => {
+          initializeProgram(programData as TrainingProgram);
+        }}
       />
     );
   };
 
   const selectProgramDay = (day: ProgramDay) => {
+    _itemSelections.day = day;
     setHeaderText(day?.title as string);
     setPageContent(
       <CircuitList
         circuits={day?.circuits as Circuit[]}
         selectAction={selectCircuit}
-        backAction={() => {}}
+        backAction={() => {
+          selectProgramSegment(_itemSelections.segment as ProgramSegment);
+          _itemSelections.day = null;
+        }}
       />
     );
   };
 
   const selectCircuit = (circuit: Circuit) => {
+    _itemSelections.circuit = circuit;
     setPageContent(
       <WorkoutList
         workouts={circuit?.workouts as Workout[]}
         selectAction={() => {}}
-        backAction={() => {}}
+        backAction={() => {
+          selectProgramDay(_itemSelections.day as ProgramDay);
+          _itemSelections.circuit = null;
+        }}
         onFullComplete={() => {
           completeCircuit(circuit);
         }}
       />
     );
   };
+
+  const goBack = () => {};
 
   const completeCircuit = async (circuit: Circuit) => {
     const userData = await SecureStore.getItemAsync("user");
@@ -96,6 +115,19 @@ export default function ProgramDetails() {
     }
   };
 
+  const initializeProgram = (data: TrainingProgram) => {
+    setHeaderText(data.title);
+    setPageContent(
+      <SegmentList
+        selectAction={selectProgramSegment}
+        backAction={() => {
+          router.back();
+        }}
+        segments={data.segments}
+      />
+    );
+  };
+
   const loadProgramData = async (id: number) => {
     fetch("http://localhost:5164/programs/find/" + id, {
       method: "GET",
@@ -112,14 +144,15 @@ export default function ProgramDetails() {
         }
       })
       .then((data) => {
-        setProgramData(data);
-        setHeaderText(data.title);
+        setProgramData(data as TrainingProgram);
+        initializeProgram(data as TrainingProgram);
+      })
+      .catch((error) => {
+        console.log(error);
         setPageContent(
-          <SegmentList
-            selectAction={selectProgramSegment}
-            backAction={() => {}}
-            segments={data.segments}
-          />
+          <View>
+            <Text>{error.message}</Text>
+          </View>
         );
       });
   };

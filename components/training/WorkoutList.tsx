@@ -2,7 +2,7 @@ import { Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import ContentCard from "../ContentCard";
 import CompletedWorkoutModal from "./CompleteWorkoutModal";
 
@@ -89,6 +89,9 @@ export default function WorkoutList(params: WorkoutListParams) {
   return (
     <View style={stylesheet.container}>
       <View style={stylesheet.dayList}>
+        <Pressable onPress={() => params.backAction()}>
+          <Text>Back</Text>
+        </Pressable>
         {params.workouts?.map((workout, index) => {
           const completedWorkout = completedWorkouts?.find(
             (cw) => cw.workoutId === workout.id
