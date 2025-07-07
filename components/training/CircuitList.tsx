@@ -2,7 +2,7 @@ import { Circuit } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import ContentCard from "../ContentCard";
 
 type CircuitListParams = {
@@ -29,9 +29,6 @@ export default function CircuitList(params: CircuitListParams) {
   return (
     <View style={stylesheet.container}>
       <View style={stylesheet.dayList}>
-        <Pressable onPress={() => params.backAction()}>
-          <Text>Back</Text>
-        </Pressable>
         {params.circuits?.map((circuit, index) => {
           var circuitComplete = false;
           if (completedCircuits?.includes(circuit.id)) {

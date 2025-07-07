@@ -51,7 +51,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="programs"
+        name="training"
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color }) => (
@@ -75,13 +75,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="person.fill" color={color} />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="programDetails"
-        options={{
-          href: null,
-          tabBarShowLabel: false,
         }}
       />
     </Tabs>

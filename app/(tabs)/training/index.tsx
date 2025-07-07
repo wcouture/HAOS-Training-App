@@ -27,8 +27,10 @@ export default function Programs() {
 
   const openProgramDetails = async (program: TrainingProgram) => {
     router.push({
-      pathname: "/programDetails",
-      params: { id: program.id },
+      pathname: "/(tabs)/training/ProgramDetails",
+      params: {
+        id: program.id,
+      },
     });
   };
 
@@ -86,6 +88,6 @@ const stylesheets = StyleSheet.create({
 
   ProgramList: {
     maxHeight: "100%",
-    width: "80%",
+    width: "100%",
   },
 });

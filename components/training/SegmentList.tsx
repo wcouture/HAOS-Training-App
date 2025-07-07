@@ -1,6 +1,6 @@
 import { ProgramSegment } from "@/Models/TrainingTypes";
 import { StyleSheet, View } from "react-native";
-import ContentCard from "../ContentCard";
+import ContentCard from "../../components/ContentCard";
 
 type SegmentListProps = {
   segments: ProgramSegment[];
