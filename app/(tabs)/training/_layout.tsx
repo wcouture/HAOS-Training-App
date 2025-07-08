@@ -24,7 +24,10 @@ export default function TrainingLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="SubscribedPrograms"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="ProgramDetails" options={{ headerShown: false }} />
         <Stack.Screen name="SegmentDetails" options={{ headerShown: false }} />
         <Stack.Screen

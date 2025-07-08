@@ -40,4 +40,10 @@ export type Exercise = {
   id: number;
   name: string;
   demoUrl: string;
+  type: ExerciseType;
 };
+
+export enum ExerciseType {
+  Strength = 1,
+  Endurance = 2,
+}

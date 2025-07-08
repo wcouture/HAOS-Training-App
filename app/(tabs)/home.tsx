@@ -1,10 +1,12 @@
 import InfoCard from "@/components/InfoCard";
+import { Exercise } from "@/Models/TrainingTypes";
 import { HeaderTitle } from "@react-navigation/elements";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const [exercises, setExercises] = useState([] as Exercise[]);
   const loadExerciseData = async () => {
     fetch("http://localhost:5164/exercises/all", {
       method: "GET",
@@ -20,7 +22,9 @@ export default function HomeScreen() {
           throw new Error("Invalid login credentials.");
         }
       })
-      .then((data) => {});
+      .then((data) => {
+        setExercises(data);
+      });
   };
 
   useEffect(() => {
@@ -41,7 +45,9 @@ export default function HomeScreen() {
         <View style={styles.sectionContainer}>
           <HeaderTitle style={styles.sectionHeader}>Exercise Demos</HeaderTitle>
           <ScrollView horizontal>
-            <InfoCard title="Power Clean" />
+            {exercises?.map((exercise) => (
+              <InfoCard key={exercise.id} title={exercise.name} />
+            ))}
           </ScrollView>
         </View>
         <View></View>

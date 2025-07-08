@@ -14,7 +14,7 @@ export default function InfoCard({ title }: InfoCardParams) {
 
   return (
     <View style={styles.CardContainer}>
-      <Text style={styles.CardTitle}>USA GYM TOUR</Text>
+      <Text style={styles.CardTitle}>{title}</Text>
     </View>
   );
 }

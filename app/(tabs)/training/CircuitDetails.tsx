@@ -1,7 +1,8 @@
 import ContentCard from "@/components/ContentCard";
-import CompletedWorkoutModal from "@/components/training/CompleteWorkoutModal";
+import CompletedWorkoutModal from "@/components/training/CompletedWorkoutModal";
+import CompleteWorkoutModal from "@/components/training/CompleteWorkoutModal";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Workout } from "@/Models/TrainingTypes";
+import { ExerciseType, Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
 import { router, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -17,16 +18,28 @@ export default function CircuitDetails() {
   const [selectedWorkout, setSelectedWorkout] = useState<Workout>(
     {} as Workout
   );
+  const [selectedCompleteWorkout, setSelectedCompleteWorkout] =
+    useState<CompletedWorkout>({} as CompletedWorkout);
   const [modalVisible, setModalVisible] = useState(false);
+  const [completeModalVisible, setCompleteModalVisible] = useState(false);
 
   const params = useLocalSearchParams();
 
-  const completeWorkout = async (workoutId: number) => {
+  const completeWorkout = async (workoutId: number, userInput: number) => {
     const completedWorkout: CompletedWorkout = {
       id: 0,
       workoutId: workoutId,
       userId: user.id,
+      completedDate: new Date(),
+      weightUsed: 0,
+      duration: 0,
     };
+
+    if (selectedWorkout.exercise_.type == ExerciseType.Strength) {
+      completedWorkout.weightUsed = userInput;
+    } else if (selectedWorkout.exercise_.type == ExerciseType.Endurance) {
+      completedWorkout.duration = userInput;
+    }
 
     const response = await fetch(
       "http://localhost:5164/userworkouts/add?userId=" + user.id,
@@ -109,7 +122,6 @@ export default function CircuitDetails() {
       .then((data) => {
         setHeaderText("P" + (index + 1));
         setWorkouts(data.workouts);
-        console.log(JSON.stringify(data.workouts));
       });
   }, []);
 
@@ -129,12 +141,10 @@ export default function CircuitDetails() {
           <View style={stylesheet.workoutList}>
             {workouts?.map((workout, index) => {
               var completed = false;
-              if (
-                user &&
-                user.completedWorkouts.findIndex(
-                  (w) => w.workoutId === workout.id
-                ) !== -1
-              ) {
+              const completedWorkoutIndex = user.completedWorkouts.findIndex(
+                (w) => w.workoutId === workout.id
+              );
+              if (user && completedWorkoutIndex !== -1) {
                 completed = true;
               }
               return (
@@ -143,9 +153,14 @@ export default function CircuitDetails() {
                   title={workout.exercise_?.name}
                   description={workout.description}
                   action={() => {
-                    if (completed) {
+                    if (!completed) {
                       setSelectedWorkout(workout);
                       setModalVisible(true);
+                    } else {
+                      setSelectedCompleteWorkout(
+                        user.completedWorkouts[completedWorkoutIndex]
+                      );
+                      setCompleteModalVisible(true);
                     }
                   }}
                   checked={completed}
@@ -154,11 +169,16 @@ export default function CircuitDetails() {
             })}
           </View>
         </View>
-        <CompletedWorkoutModal
+        <CompleteWorkoutModal
           isVisible={modalVisible}
           setIsVisible={setModalVisible}
           selectedWorkout={selectedWorkout}
           onComplete={completeWorkout}
+        />
+        <CompletedWorkoutModal
+          isVisible={completeModalVisible}
+          setIsVisible={setCompleteModalVisible}
+          completedWorkout={selectedCompleteWorkout}
         />
       </SafeAreaView>
     </SafeAreaProvider>

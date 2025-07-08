@@ -25,4 +25,7 @@ export type CompletedWorkout = {
   id: number;
   workoutId: number;
   userId: number;
+  completedDate: Date;
+  weightUsed: number;
+  duration: number;
 };
