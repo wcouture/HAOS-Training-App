@@ -1,5 +1,5 @@
 import InfoCard from "@/components/InfoCard";
-import { Exercise } from "@/Models/TrainingTypes";
+import { Exercise, getExerciseTypeString } from "@/Models/TrainingTypes";
 import { HeaderTitle } from "@react-navigation/elements";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -34,23 +34,35 @@ export default function HomeScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeAreaView}>
-        <View style={styles.sectionContainer}>
-          <HeaderTitle style={styles.sectionHeader}>
-            Upcoming Events
-          </HeaderTitle>
-          <ScrollView horizontal>
-            <InfoCard title="USA Gym Tour" />
-          </ScrollView>
-        </View>
-        <View style={styles.sectionContainer}>
-          <HeaderTitle style={styles.sectionHeader}>Exercise Demos</HeaderTitle>
-          <ScrollView horizontal>
-            {exercises?.map((exercise) => (
-              <InfoCard key={exercise.id} title={exercise.name} />
-            ))}
-          </ScrollView>
-        </View>
-        <View></View>
+        <ScrollView>
+          <View style={styles.sectionContainer}>
+            <HeaderTitle style={styles.sectionHeader}>
+              Upcoming Events
+            </HeaderTitle>
+            <ScrollView horizontal>
+              <InfoCard
+                title="USA Gym Tour"
+                embedSource="https://www.google.com"
+              />
+            </ScrollView>
+          </View>
+          <View style={styles.sectionContainer}>
+            <HeaderTitle style={styles.sectionHeader}>
+              Exercise Demos
+            </HeaderTitle>
+            <ScrollView horizontal>
+              {exercises?.map((exercise) => (
+                <InfoCard
+                  key={exercise.id}
+                  title={exercise.name}
+                  description={getExerciseTypeString(exercise.type)}
+                  embedSource={exercise.demoUrl}
+                />
+              ))}
+            </ScrollView>
+          </View>
+          <View></View>
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   );

@@ -47,3 +47,12 @@ export enum ExerciseType {
   Strength = 1,
   Endurance = 2,
 }
+
+export function getExerciseTypeString(exerciseType: ExerciseType): string {
+  switch (exerciseType) {
+    case ExerciseType.Strength:
+      return "Strength";
+    case ExerciseType.Endurance:
+      return "Endurance";
+  }
+}
