@@ -50,8 +50,9 @@ export default function Programs() {
       <SafeAreaView style={stylesheets.container}>
         <Text style={stylesheets.ListTitle}>Subscribed Programs</Text>
         <ScrollView style={stylesheets.ProgramList}>
-          {programs?.map((program) => (
+          {programs?.map((program, index) => (
             <ContentCard
+              index={index}
               key={program.id}
               title={program.title}
               description={program.subtitle}

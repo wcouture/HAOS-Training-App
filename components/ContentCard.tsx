@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type ContentCardParams = {
+  index: number;
   title?: string;
   description?: string;
   action: Function;
@@ -13,6 +14,7 @@ export default function ContentCard({
   description,
   action,
   checked,
+  index,
 }: ContentCardParams) {
   const [_cardTitle, setCardTitle] = useState("");
   const [_cardDescription, setCardDescription] = useState("");
@@ -24,7 +26,12 @@ export default function ContentCard({
 
   return (
     <Pressable onPress={() => action()}>
-      <View style={styles.CardContainer}>
+      <View
+        style={[
+          styles.CardContainer,
+          index % 2 === 0 ? styles.Red : styles.Grey,
+        ]}
+      >
         <View style={styles.CardTextSection}>
           <Text style={styles.CardTitle}>{_cardTitle}</Text>
           <Text style={styles.CardDescription}>{_cardDescription}</Text>
@@ -42,12 +49,20 @@ export default function ContentCard({
 }
 
 const styles = StyleSheet.create({
+  Red: {
+    backgroundColor: "#B00",
+  },
+
+  Grey: {
+    backgroundColor: "#707070",
+  },
+
   CardContainer: {
     borderRadius: 15,
-    backgroundColor: "#B00",
+
     width: "auto",
     padding: 20,
-    margin: 20,
+    margin: 10,
     alignContent: "center",
     alignItems: "center",
     justifyContent: "space-between",

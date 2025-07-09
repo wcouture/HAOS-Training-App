@@ -55,6 +55,7 @@ export default function SegmentDetails() {
             {programDays?.map((day, index) => {
               return (
                 <ContentCard
+                  index={index}
                   key={day.id}
                   title={"Day " + (index + 1) + ": " + day.title}
                   description={"Week " + day.weekNum}

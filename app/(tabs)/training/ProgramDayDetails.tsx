@@ -66,6 +66,7 @@ export default function ProgramDayDetails() {
               }
               return (
                 <ContentCard
+                  index={index}
                   key={circuit.id}
                   title={"P" + (index + 1)}
                   description={circuit.description}

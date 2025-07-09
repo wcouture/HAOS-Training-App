@@ -55,22 +55,30 @@ export default function CircuitDetails() {
 
     if (response.ok) {
       completedWorkout.id = (await response.json()).id;
-      user.completedWorkouts.push(completedWorkout);
+      const userData = await SecureStore.getItemAsync("user");
 
-      await SecureStore.setItemAsync("user", JSON.stringify(user));
+      if (userData) {
+        const userObj = JSON.parse(userData);
+        userObj.completedWorkouts.push(completedWorkout);
+        await SecureStore.setItemAsync("user", JSON.stringify(userObj));
+        setUser(userObj);
 
-      var fullComplete = true;
-      for (var i = 0; i < params.workouts.length; i++) {
-        if (
-          !user.completedWorkouts.find((cw) => cw.workoutId === workouts[i]?.id)
-        ) {
-          fullComplete = false;
-          break;
+        var fullComplete = true;
+        for (var i = 0; i < params.workouts.length; i++) {
+          if (
+            !user.completedWorkouts.find(
+              (cw) => cw.workoutId === workouts[i]?.id
+            )
+          ) {
+            fullComplete = false;
+            break;
+          }
+        }
+        if (fullComplete) {
+          completeCircuit();
         }
       }
-      if (fullComplete) {
-        completeCircuit();
-      }
+
       setSelectedWorkout({} as Workout);
       setModalVisible(false);
     }
@@ -149,6 +157,7 @@ export default function CircuitDetails() {
               }
               return (
                 <ContentCard
+                  index={index}
                   key={workout.id}
                   title={workout.exercise_?.name}
                   description={workout.description}

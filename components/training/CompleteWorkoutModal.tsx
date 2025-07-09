@@ -24,6 +24,7 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
       return (
         <View>
           <TextInput
+            style={stylesheet.WorkoutDataInput}
             value={inputValue}
             onChangeText={setInputValue}
             keyboardType="numeric"
@@ -35,6 +36,7 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
     return (
       <View>
         <TextInput
+          style={stylesheet.WorkoutDataInput}
           value={inputValue}
           onChangeText={setInputValue}
           keyboardType="numeric"
@@ -133,5 +135,13 @@ const stylesheet = StyleSheet.create({
     textAlign: "center",
     color: "#FFF",
     fontWeight: 800,
+  },
+
+  WorkoutDataInput: {
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.2)",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
   },
 });

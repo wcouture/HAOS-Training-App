@@ -54,9 +54,10 @@ export default function ProgramDetails() {
           </Pressable>
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
           <View style={stylesheet.SegmentList}>
-            {programData?.segments.map((segment) => {
+            {programData?.segments.map((segment, index) => {
               return (
                 <ContentCard
+                  index={index}
                   key={segment.id}
                   title={segment.title}
                   description={segment.subtitle}

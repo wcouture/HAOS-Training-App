@@ -10,20 +10,40 @@ type CompletedWorkoutParams = {
 };
 
 export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
+  const [modalVisible, setModalVisible] = useState(params.isVisible);
   const [workout, setWorkout] = useState<Workout>({} as Workout);
+  const [workoutId, setWorkoutId] = useState(0);
+
+  const fetchWorkout = async (workoutId: number) => {
+    const response = await fetch(
+      "http://localhost:5164/workouts/find/" + workoutId,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "HAOSAPIauthorizationToken",
+        },
+      }
+    );
+    if (response.ok) {
+      setWorkout(await response.json());
+    } else {
+      console.log("Error: " + response.status);
+    }
+  };
 
   useEffect(() => {
-    const workoutId = params.completedWorkout.workoutId;
-    const fetchWorkout = async () => {
-      const response = await fetch(
-        "http://localhost:5164/workouts/find/" + workoutId
-      );
-      if (response.ok) {
-        setWorkout(await response.json());
-      }
-    };
-    fetchWorkout();
-  }, []);
+    const wId = params.completedWorkout.workoutId;
+    if (wId) {
+      setWorkoutId(wId);
+    }
+  }, [params.isVisible]);
+
+  useEffect(() => {
+    if (workoutId > 0) {
+      fetchWorkout(workoutId);
+    }
+  }, [workoutId]);
   return (
     <Modal
       transparent
@@ -43,9 +63,13 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
         </View>
         <View style={stylesheet.ModalInputSection}>
           {workout?.exercise_?.type === ExerciseType.Strength ? (
-            <Text>{"Weight Used" + params.completedWorkout.weightUsed}</Text>
+            <Text style={stylesheet.ModalInputText}>
+              {"Weight Used" + params.completedWorkout.weightUsed}
+            </Text>
           ) : (
-            <Text>{"Time Spent" + params.completedWorkout.duration}</Text>
+            <Text style={stylesheet.ModalInputText}>
+              {"Time Spent: " + params.completedWorkout.duration}
+            </Text>
           )}
         </View>
         <View style={stylesheet.ModalButtonSection}>
@@ -69,7 +93,7 @@ const stylesheet = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: "80%",
-    height: 500,
+    height: 300,
     backgroundColor: "#FFF",
     borderRadius: 15,
     boxShadow: "1px 1px 5px 1px rgba(0,0,0,0.2)",
@@ -88,12 +112,18 @@ const stylesheet = StyleSheet.create({
 
   ModalExerciseText: {
     textAlign: "center",
-    fontSize: 16,
+    fontSize: 18,
   },
 
   ModalInputSection: {
     marginTop: 25,
     marginBottom: 25,
+  },
+
+  ModalInputText: {
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: 800,
   },
 
   ModalButtonSection: {
