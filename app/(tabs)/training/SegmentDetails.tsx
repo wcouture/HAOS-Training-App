@@ -1,7 +1,9 @@
 import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ProgramDay } from "@/Models/TrainingTypes";
+import { UserAccount } from "@/Models/UserAccount";
 import { router, useLocalSearchParams } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -9,11 +11,18 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 export default function SegmentDetails() {
   const [programDays, setProgramDays] = useState<ProgramDay[]>([]);
   const [headerText, setHeaderText] = useState("");
+  const [user, setUser] = useState({ id: -1 } as UserAccount);
 
   const params = useLocalSearchParams();
 
   useEffect(() => {
     const segmentId = params.id;
+
+    SecureStore.getItemAsync("user").then((userData) => {
+      if (userData) {
+        setUser(JSON.parse(userData));
+      }
+    });
 
     fetch("http://localhost:5164/segments/find/" + segmentId, {
       method: "GET",
@@ -38,6 +47,40 @@ export default function SegmentDetails() {
       });
   }, []);
 
+  useEffect(() => {
+    if (!user.completedSegments?.includes(parseInt(params.id as string))) {
+      return;
+    }
+
+    for (let i = 0; i < programDays.length; i++) {
+      if (!user.completedDays?.includes(programDays[i].id)) {
+        return;
+      }
+    }
+
+    fetch(
+      "http://localhost:5164/segments/complete/" + user.id + "/" + params.id,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "HAOSAPIauthorizationToken",
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          user.completedSegments.push(parseInt(params.id as string));
+          SecureStore.setItemAsync("user", JSON.stringify(user));
+        } else {
+          console.log("Error in Segment Details: " + response);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [programDays]);
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.container}>
@@ -53,12 +96,19 @@ export default function SegmentDetails() {
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
           <View style={stylesheet.dayList}>
             {programDays?.map((day, index) => {
+              var completed = false;
+              if (user.completedDays) {
+                if (user.completedDays.includes(day.id)) {
+                  completed = true;
+                }
+              }
               return (
                 <ContentCard
                   index={index}
                   key={day.id}
                   title={"Day " + (index + 1) + ": " + day.title}
                   description={"Week " + day.weekNum}
+                  checked={completed}
                   action={() => {
                     router.push({
                       pathname: "/training/ProgramDayDetails",

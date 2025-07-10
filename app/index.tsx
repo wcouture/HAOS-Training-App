@@ -22,6 +22,11 @@ export default function LandingScreen() {
         }
       })
       .then((data: UserAccount) => {
+        if (data.completedPrograms == undefined) data.completedPrograms = [];
+        if (data.completedSegments == undefined) data.completedSegments = [];
+        if (data.completedDays == undefined) data.completedDays = [];
+        if (data.completedCircuits == undefined) data.completedCircuits = [];
+        if (data.completedWorkouts == undefined) data.completedWorkouts = [];
         SecureStore.setItemAsync("user", JSON.stringify(data));
       });
   };

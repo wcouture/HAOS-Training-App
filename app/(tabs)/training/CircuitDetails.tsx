@@ -26,7 +26,7 @@ export default function CircuitDetails() {
   const params = useLocalSearchParams();
 
   const completeWorkout = async (workoutId: number, userInput: number) => {
-    const completedWorkout: CompletedWorkout = {
+    var completedWorkout: CompletedWorkout = {
       id: 0,
       workoutId: workoutId,
       userId: user.id,
@@ -54,20 +54,22 @@ export default function CircuitDetails() {
     );
 
     if (response.ok) {
-      completedWorkout.id = (await response.json()).id;
+      completedWorkout = (await response.json()) as CompletedWorkout;
       const userData = await SecureStore.getItemAsync("user");
 
       if (userData) {
-        const userObj = JSON.parse(userData);
+        const userObj: UserAccount = JSON.parse(userData);
         userObj.completedWorkouts.push(completedWorkout);
-        await SecureStore.setItemAsync("user", JSON.stringify(userObj));
         setUser(userObj);
+        await SecureStore.setItemAsync("user", JSON.stringify(userObj));
 
         var fullComplete = true;
-        for (var i = 0; i < params.workouts.length; i++) {
+        console.log(JSON.stringify(user.completedWorkouts));
+        for (var i = 0; i < workouts.length; i++) {
+          console.log(workouts[i].id);
           if (
-            !user.completedWorkouts.find(
-              (cw) => cw.workoutId === workouts[i]?.id
+            !userObj.completedWorkouts.find(
+              (x) => x.workoutId == workouts[i].id
             )
           ) {
             fullComplete = false;
@@ -85,6 +87,7 @@ export default function CircuitDetails() {
   };
 
   const completeCircuit = async () => {
+    console.log("Completing Circuit");
     fetch(
       "http://localhost:5164/circuits/complete/" + user.id + "/" + params.id,
       {
@@ -96,9 +99,14 @@ export default function CircuitDetails() {
       }
     ).then((response) => {
       if (response.ok) {
-        user.completedCircuits.push(parseInt(params.id as string));
-        SecureStore.setItemAsync("user", JSON.stringify(user));
-        router.back();
+        SecureStore.getItemAsync("user").then((userData) => {
+          if (userData) {
+            const userObj = JSON.parse(userData);
+            userObj.completedCircuits.push(parseInt(params.id as string));
+            setUser(userObj);
+            SecureStore.setItemAsync("user", JSON.stringify(userObj));
+          }
+        });
       }
     });
   };

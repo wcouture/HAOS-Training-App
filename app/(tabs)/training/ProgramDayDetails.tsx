@@ -42,9 +42,50 @@ export default function ProgramDayDetails() {
         setHeaderText(data.title);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("Error in Program Day Details: " + error);
       });
   }, []);
+
+  useEffect(() => {
+    // If user hasn't completed any circuits or data hasn't loaded yet, return
+    if (!user.completedCircuits) {
+      return;
+    }
+
+    // If this day already complete, return
+    if (user.completedDays?.includes(parseInt(params.id as string))) {
+      return;
+    }
+
+    for (let i = 0; i < circuits.length; i++) {
+      // If any circuits aren't completed, return
+      if (!user.completedCircuits.includes(circuits[i].id)) {
+        console.log("Not all circuits completed");
+        return;
+      }
+    }
+
+    // All circuits are complete
+    // Mark this day as complete
+    fetch("http://localhost:5164/days/complete/" + user.id + "/" + params.id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "HAOSAPIauthorizationToken",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          user.completedDays.push(parseInt(params.id as string));
+          SecureStore.setItemAsync("user", JSON.stringify(user));
+        } else {
+          console.log("Error completing day: " + response.status);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [circuits]);
   return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.container}>
@@ -64,6 +105,7 @@ export default function ProgramDayDetails() {
               if (user && user.completedCircuits.includes(circuit.id)) {
                 completed = true;
               }
+
               return (
                 <ContentCard
                   index={index}

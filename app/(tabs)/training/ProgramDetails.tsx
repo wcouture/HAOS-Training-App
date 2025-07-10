@@ -1,7 +1,9 @@
 import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { TrainingProgram } from "@/Models/TrainingTypes";
+import { UserAccount } from "@/Models/UserAccount";
 import { router, useLocalSearchParams } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -10,6 +12,7 @@ export default function ProgramDetails() {
   const localParams = useLocalSearchParams();
   const [programData, setProgramData] = useState<TrainingProgram | null>(null);
   const [headerText, setHeaderText] = useState("");
+  const [user, setUser] = useState({ id: -1 } as UserAccount);
 
   const loadProgramData = async (id: number) => {
     fetch("http://localhost:5164/programs/find/" + id, {
@@ -37,8 +40,54 @@ export default function ProgramDetails() {
 
   useEffect(() => {
     const programId = parseInt(localParams.id as string);
+
+    SecureStore.getItemAsync("user").then((userData) => {
+      if (userData) {
+        setUser(JSON.parse(userData));
+      }
+    });
     loadProgramData(programId);
   }, []);
+
+  useEffect(() => {
+    if (
+      user.completedSegments == undefined ||
+      user.completedPrograms?.includes(programData?.id as number)
+    ) {
+      return;
+    }
+
+    for (let i = 0; i < (programData?.segments.length as number); i++) {
+      if (
+        !user.completedSegments.includes(programData?.segments[i].id as number)
+      ) {
+        return;
+      }
+    }
+
+    fetch(
+      "http://localhost:5164/programs/complete/" +
+        user.id +
+        "/" +
+        programData?.id,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "HAOSAPIauthorizationToken",
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          user.completedPrograms.push(programData?.id as number);
+          SecureStore.setItemAsync("user", JSON.stringify(user));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [programData]);
 
   return (
     <SafeAreaProvider>
@@ -55,12 +104,14 @@ export default function ProgramDetails() {
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
           <View style={stylesheet.SegmentList}>
             {programData?.segments.map((segment, index) => {
+              var completed = user?.completedSegments.includes(segment.id);
               return (
                 <ContentCard
                   index={index}
                   key={segment.id}
                   title={segment.title}
                   description={segment.subtitle}
+                  checked={completed}
                   action={() => {
                     router.push({
                       pathname: "/training/SegmentDetails",
