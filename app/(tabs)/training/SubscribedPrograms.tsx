@@ -50,15 +50,19 @@ export default function Programs() {
       <SafeAreaView style={stylesheets.container}>
         <Text style={stylesheets.ListTitle}>Subscribed Programs</Text>
         <ScrollView style={stylesheets.ProgramList}>
-          {programs?.map((program, index) => (
-            <ContentCard
-              index={index}
-              key={program.id}
-              title={program.title}
-              description={program.subtitle}
-              action={() => openProgramDetails(program)}
-            />
-          ))}
+          {programs?.map((program, index) => {
+            const completed = user.completedPrograms?.includes(program.id);
+            return (
+              <ContentCard
+                index={index}
+                key={program.id}
+                title={program.title}
+                description={program.subtitle}
+                checked={completed}
+                action={() => openProgramDetails(program)}
+              />
+            );
+          })}
         </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>

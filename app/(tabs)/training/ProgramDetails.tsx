@@ -50,12 +50,18 @@ export default function ProgramDetails() {
   }, []);
 
   useEffect(() => {
-    if (
-      user.completedSegments == undefined ||
-      user.completedPrograms?.includes(programData?.id as number)
-    ) {
+    if (user.id == -1) {
       return;
     }
+
+    console.log("Checking is segments complete");
+
+    if (user.completedPrograms?.includes(programData?.id as number)) {
+      console.log("Program already completed");
+      return;
+    }
+
+    console.log(JSON.stringify(user.completedSegments));
 
     for (let i = 0; i < (programData?.segments.length as number); i++) {
       if (

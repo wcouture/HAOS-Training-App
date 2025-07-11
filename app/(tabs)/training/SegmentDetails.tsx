@@ -48,10 +48,16 @@ export default function SegmentDetails() {
   }, []);
 
   useEffect(() => {
-    if (!user.completedSegments?.includes(parseInt(params.id as string))) {
+    if (user.id === -1) {
       return;
     }
 
+    if (user.completedSegments?.includes(parseInt(params.id as string))) {
+      console.log("Segment already complete");
+      return;
+    }
+
+    console.log(JSON.stringify(user.completedDays));
     for (let i = 0; i < programDays.length; i++) {
       if (!user.completedDays?.includes(programDays[i].id)) {
         return;
