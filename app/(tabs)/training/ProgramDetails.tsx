@@ -15,7 +15,7 @@ export default function ProgramDetails() {
   const [user, setUser] = useState({ id: -1 } as UserAccount);
 
   const loadProgramData = async (id: number) => {
-    fetch("http://localhost:5164/programs/find/" + id, {
+    fetch("https://haos.willc-dev.net/programs/find/" + id, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +72,7 @@ export default function ProgramDetails() {
     }
 
     fetch(
-      "http://localhost:5164/programs/complete/" +
+      "https://haos.willc-dev.net/programs/complete/" +
         user.id +
         "/" +
         programData?.id,

@@ -42,7 +42,7 @@ export default function CircuitDetails() {
     }
 
     const response = await fetch(
-      "http://localhost:5164/userworkouts/add?userId=" + user.id,
+      "https://haos.willc-dev.net/userworkouts/add?userId=" + user.id,
       {
         method: "POST",
         headers: {
@@ -89,7 +89,7 @@ export default function CircuitDetails() {
   const completeCircuit = async () => {
     console.log("Completing Circuit");
     fetch(
-      "http://localhost:5164/circuits/complete/" + user.id + "/" + params.id,
+      "https://haos.willc-dev.net/circuits/complete/" + user.id + "/" + params.id,
       {
         method: "POST",
         headers: {
@@ -121,7 +121,7 @@ export default function CircuitDetails() {
       }
     });
 
-    fetch("http://localhost:5164/circuits/find/" + id, {
+    fetch("https://haos.willc-dev.net/circuits/find/" + id, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

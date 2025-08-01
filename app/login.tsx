@@ -27,7 +27,7 @@ export default function Login() {
 
     const payload = JSON.stringify(user);
 
-    fetch("http://localhost:5164/user/login", {
+    fetch("https://haos.willc-dev.net/user/login", {
       method: "POST",
       headers: {
         Accept: "application/json",

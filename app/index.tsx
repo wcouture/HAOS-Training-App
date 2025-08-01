@@ -7,7 +7,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function LandingScreen() {
   const updateUserInfo = async (userId: number) => {
-    fetch("http://localhost:5164/user/find/" + userId, {
+    fetch("https://haos.willc-dev.net/user/find/" + userId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

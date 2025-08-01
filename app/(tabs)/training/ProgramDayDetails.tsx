@@ -23,7 +23,7 @@ export default function ProgramDayDetails() {
       }
     });
 
-    fetch("http://localhost:5164/days/find/" + programDayId, {
+    fetch("https://haos.willc-dev.net/days/find/" + programDayId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export default function ProgramDayDetails() {
 
     // All circuits are complete
     // Mark this day as complete
-    fetch("http://localhost:5164/days/complete/" + user.id + "/" + params.id, {
+    fetch("https://haos.willc-dev.net/days/complete/" + user.id + "/" + params.id, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

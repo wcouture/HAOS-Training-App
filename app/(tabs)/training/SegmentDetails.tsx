@@ -24,7 +24,7 @@ export default function SegmentDetails() {
       }
     });
 
-    fetch("http://localhost:5164/segments/find/" + segmentId, {
+    fetch("https://haos.willc-dev.net/segments/find/" + segmentId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export default function SegmentDetails() {
     }
 
     fetch(
-      "http://localhost:5164/segments/complete/" + user.id + "/" + params.id,
+      "https://haos.willc-dev.net/segments/complete/" + user.id + "/" + params.id,
       {
         method: "POST",
         headers: {

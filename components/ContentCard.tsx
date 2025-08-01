@@ -59,10 +59,9 @@ const styles = StyleSheet.create({
 
   CardContainer: {
     borderRadius: 15,
-
-    width: "auto",
     padding: 20,
     margin: 10,
+    display: "flex",
     alignContent: "center",
     alignItems: "center",
     justifyContent: "space-between",
@@ -75,18 +74,18 @@ const styles = StyleSheet.create({
     fontWeight: 800,
     fontSize: 20,
     textAlign: "left",
-    width: "100%",
+    maxWidth: "100%",
   },
 
   CardDescription: {
     color: "white",
     fontWeight: 600,
     textAlign: "left",
-    width: "100%",
+    flexWrap: "wrap",
   },
 
   CardTextSection: {
-    width: "auto",
+    flex: 1,
     alignItems: "flex-start",
   },
 

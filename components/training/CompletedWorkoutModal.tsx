@@ -16,7 +16,7 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
 
   const fetchWorkout = async (workoutId: number) => {
     const response = await fetch(
-      "http://localhost:5164/workouts/find/" + workoutId,
+      "https://haos.willc-dev.net/workouts/find/" + workoutId,
       {
         method: "GET",
         headers: {

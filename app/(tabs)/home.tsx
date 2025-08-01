@@ -8,7 +8,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 export default function HomeScreen() {
   const [exercises, setExercises] = useState([] as Exercise[]);
   const loadExerciseData = async () => {
-    fetch("http://localhost:5164/exercises/all", {
+    fetch("https://haos.willc-dev.net/exercises/all", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
