@@ -18,11 +18,14 @@ type CompleteWorkoutParams = {
 
 export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
   const [inputValue, setInputValue] = React.useState("");
+  const [minuteValue, setMinuteValue] = React.useState("");
+  const [secondValue, setSecondValue] = React.useState("");
+
   const generateInputs = () => {
     const exerciseType = params.selectedWorkout?.exercise_?.type;
     if (exerciseType === ExerciseType.Strength) {
       return (
-        <View>
+        <View style={stylesheet.ModalInputContainer}>
           <TextInput
             style={stylesheet.WorkoutDataInput}
             value={inputValue}
@@ -30,19 +33,32 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
             keyboardType="numeric"
             placeholder="Weight Used"
           />
+          <Text>
+            lbs
+          </Text>
         </View>
       );
     }
-    return (
-      <View>
-        <TextInput
-          style={stylesheet.WorkoutDataInput}
-          value={inputValue}
-          onChangeText={setInputValue}
-          keyboardType="numeric"
-          placeholder="Time Spent"
-        />
-      </View>
+    return (<>
+        <Text>Time completed in: </Text>
+        <View style={stylesheet.ModalInputContainer}>
+          <TextInput
+            style={stylesheet.WorkoutDataInput}
+            value={minuteValue}
+            onChangeText={setMinuteValue}
+            keyboardType="numeric"
+            placeholder="00"
+          />
+          <Text style={{fontSize: 16, fontWeight: 600}}>:</Text>
+          <TextInput
+            style={stylesheet.WorkoutDataInput}
+            value={secondValue}
+            onChangeText={setSecondValue}
+            keyboardType="numeric"
+            placeholder="00"/>
+        </View>
+    </>
+    
     );
   };
 
@@ -68,7 +84,10 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
           <Pressable
             style={stylesheet.ModalButton}
             onPress={() => {
-              const userInput = parseInt(inputValue);
+              var userInput = parseInt(inputValue);
+              if (params.selectedWorkout?.exercise_?.type === ExerciseType.Endurance) {
+                userInput = parseInt(minuteValue) * 60 + parseInt(secondValue);
+              }
               params.onComplete(params.selectedWorkout.id, userInput);
               params.setIsVisible(false);
             }}
@@ -115,11 +134,21 @@ const stylesheet = StyleSheet.create({
   ModalExerciseText: {
     textAlign: "center",
     fontSize: 16,
+    marginLeft: 20,
+    marginRight: 20,
   },
 
   ModalInputSection: {
     marginTop: 25,
     marginBottom: 25,
+  },
+  ModalInputContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 
   ModalButtonSection: {
@@ -141,7 +170,7 @@ const stylesheet = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.2)",
     padding: 10,
+    fontSize: 22,
     borderRadius: 10,
-    marginBottom: 10,
   },
 });

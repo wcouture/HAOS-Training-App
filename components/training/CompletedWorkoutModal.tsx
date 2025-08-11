@@ -63,13 +63,24 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
         </View>
         <View style={stylesheet.ModalInputSection}>
           {workout?.exercise_?.type === ExerciseType.Strength ? (
-            <Text style={stylesheet.ModalInputText}>
-              {"Weight Used" + params.completedWorkout.weightUsed}
+            <>
+            <Text style={stylesheet.ModalDataHeader}>
+              {"Weight Used"}
             </Text>
+            <Text style={stylesheet.ModalDataLabel}>
+              {params.completedWorkout.weightUsed}
+            </Text>
+            </>
+            
           ) : (
-            <Text style={stylesheet.ModalInputText}>
-              {"Time Spent: " + params.completedWorkout.duration}
+            <>
+            <Text style={stylesheet.ModalDataHeader}>
+              {"Time Spent: "}
             </Text>
+            <Text style={stylesheet.ModalDataLabel}>
+               {Math.floor(params.completedWorkout.duration / 60)} : {params.completedWorkout.duration % 60} s
+            </Text>
+            </>
           )}
         </View>
         <View style={stylesheet.ModalButtonSection}>
@@ -93,7 +104,7 @@ const stylesheet = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: "80%",
-    height: 300,
+    height: 400,
     backgroundColor: "#FFF",
     borderRadius: 15,
     boxShadow: "1px 1px 5px 1px rgba(0,0,0,0.2)",
@@ -113,6 +124,8 @@ const stylesheet = StyleSheet.create({
   ModalExerciseText: {
     textAlign: "center",
     fontSize: 18,
+    marginLeft: 20,
+    marginRight: 20,
   },
 
   ModalInputSection: {
@@ -120,10 +133,16 @@ const stylesheet = StyleSheet.create({
     marginBottom: 25,
   },
 
-  ModalInputText: {
+  ModalDataHeader: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: 800,
+  },
+
+  ModalDataLabel: {
+    textAlign: "center",
+    fontSize: 24,
+    fontWeight: 300,
   },
 
   ModalButtonSection: {

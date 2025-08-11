@@ -157,7 +157,7 @@ export default function CircuitDetails() {
           <View style={stylesheet.workoutList}>
             {workouts?.map((workout, index) => {
               var completed = false;
-              const completedWorkoutIndex = user.completedWorkouts.findIndex(
+              const completedWorkoutIndex = user.completedWorkouts?.findIndex(
                 (w) => w.workoutId === workout.id
               );
               if (user && completedWorkoutIndex !== -1) {
