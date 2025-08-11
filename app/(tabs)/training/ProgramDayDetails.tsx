@@ -60,7 +60,6 @@ export default function ProgramDayDetails() {
     for (let i = 0; i < circuits.length; i++) {
       // If any circuits aren't completed, return
       if (!user.completedCircuits.includes(circuits[i].id)) {
-        console.log("Not all circuits completed");
         return;
       }
     }

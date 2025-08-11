@@ -25,18 +25,22 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
     const exerciseType = params.selectedWorkout?.exercise_?.type;
     if (exerciseType === ExerciseType.Strength) {
       return (
+        <>
+        <Text>Weight lifted: </Text>
         <View style={stylesheet.ModalInputContainer}>
           <TextInput
             style={stylesheet.WorkoutDataInput}
             value={inputValue}
             onChangeText={setInputValue}
             keyboardType="numeric"
-            placeholder="Weight Used"
+            placeholder="00"
           />
           <Text>
             lbs
           </Text>
         </View>
+        </>
+        
       );
     }
     return (<>
@@ -90,6 +94,9 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
               }
               params.onComplete(params.selectedWorkout.id, userInput);
               params.setIsVisible(false);
+              setInputValue("");
+              setMinuteValue("");
+              setSecondValue("");
             }}
           >
             <Text style={stylesheet.ModalButtonText}>Complete</Text>
@@ -172,5 +179,7 @@ const stylesheet = StyleSheet.create({
     padding: 10,
     fontSize: 22,
     borderRadius: 10,
+    minWidth: 50,
+    textAlign: "center",
   },
 });

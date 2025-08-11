@@ -64,7 +64,6 @@ export default function CircuitDetails() {
         await SecureStore.setItemAsync("user", JSON.stringify(userObj));
 
         var fullComplete = true;
-        console.log(JSON.stringify(user.completedWorkouts));
         for (var i = 0; i < workouts.length; i++) {
           console.log(workouts[i].id);
           if (
