@@ -4,9 +4,9 @@ import CompleteWorkoutModal from "@/components/training/CompleteWorkoutModal";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ExerciseType, Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -109,36 +109,37 @@ export default function CircuitDetails() {
     });
   };
 
-  useEffect(() => {
-    const id = params.id;
-    const index = parseInt(params.index as string);
+  useFocusEffect(
+    useCallback(() => {
+      const id = params.id;
+      const index = parseInt(params.index as string);
 
-    SecureStore.getItemAsync("user").then((userData) => {
-      if (userData) {
-        setUser(JSON.parse(userData));
-      }
-    });
-
-    fetch("https://haos.willc-dev.net/circuits/find/" + id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "HAOSAPIauthorizationToken",
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Invalid login credentials.");
+      SecureStore.getItemAsync("user").then((userData) => {
+        if (userData) {
+          setUser(JSON.parse(userData));
         }
-      })
-      .then((data) => {
-        setHeaderText("P" + (index + 1));
-        setWorkouts(data.workouts);
       });
-  }, []);
 
+      fetch("https://haos.willc-dev.net/circuits/find/" + id, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "HAOSAPIauthorizationToken",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Invalid login credentials.");
+          }
+        })
+        .then((data) => {
+          setHeaderText("P" + (index + 1));
+          setWorkouts(data.workouts);
+        });
+    }, [])
+  );
   return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.container}>

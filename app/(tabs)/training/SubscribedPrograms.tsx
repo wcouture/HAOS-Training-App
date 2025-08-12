@@ -1,9 +1,9 @@
 import ContentCard from "@/components/ContentCard";
 import { TrainingProgram } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -35,9 +35,11 @@ export default function Programs() {
   };
 
   // Retrieve APIs public RSA key
-  useEffect(() => {
-    fetchUserInfo();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserInfo();
+    }, [])
+  );
 
   useEffect(() => {
     if (user.id !== -1) {

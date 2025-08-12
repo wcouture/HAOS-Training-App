@@ -2,9 +2,9 @@ import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { TrainingProgram } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -38,16 +38,18 @@ export default function ProgramDetails() {
       });
   };
 
-  useEffect(() => {
-    const programId = parseInt(localParams.id as string);
+  useFocusEffect(
+    useCallback(() => {
+      const programId = parseInt(localParams.id as string);
 
-    SecureStore.getItemAsync("user").then((userData) => {
-      if (userData) {
-        setUser(JSON.parse(userData));
-      }
-    });
-    loadProgramData(programId);
-  }, []);
+      SecureStore.getItemAsync("user").then((userData) => {
+        if (userData) {
+          setUser(JSON.parse(userData));
+        }
+      });
+      loadProgramData(programId);
+    }, [])
+  );
 
   useEffect(() => {
     if (user.id == -1) {

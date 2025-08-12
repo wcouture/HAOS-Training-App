@@ -2,9 +2,9 @@ import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Circuit } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -14,37 +14,39 @@ export default function ProgramDayDetails() {
   const [headerText, setHeaderText] = useState<string>("");
   const params = useLocalSearchParams();
 
-  useEffect(() => {
-    const programDayId = params.id;
+  useFocusEffect(
+    useCallback(() => {
+      const programDayId = params.id;
 
-    SecureStore.getItemAsync("user").then((userData) => {
-      if (userData) {
-        setUser(JSON.parse(userData));
-      }
-    });
-
-    fetch("https://haos.willc-dev.net/days/find/" + programDayId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "HAOSAPIauthorizationToken",
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Invalid login credentials.");
+      SecureStore.getItemAsync("user").then((userData) => {
+        if (userData) {
+          setUser(JSON.parse(userData));
         }
-      })
-      .then((data) => {
-        setCircuits(data.circuits);
-        setHeaderText(data.title);
-      })
-      .catch((error) => {
-        console.log("Error in Program Day Details: " + error);
       });
-  }, []);
+
+      fetch("https://haos.willc-dev.net/days/find/" + programDayId, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "HAOSAPIauthorizationToken",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Invalid login credentials.");
+          }
+        })
+        .then((data) => {
+          setCircuits(data.circuits);
+          setHeaderText(data.title);
+        })
+        .catch((error) => {
+          console.log("Error in Program Day Details: " + error);
+        });
+    }, [])
+  );
 
   useEffect(() => {
     // If user hasn't completed any circuits or data hasn't loaded yet, return
