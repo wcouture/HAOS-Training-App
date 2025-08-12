@@ -5,8 +5,8 @@ import { UserAccount } from "@/Models/UserAccount";
 import { router, useLocalSearchParams } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProgramDetails() {
   const localParams = useLocalSearchParams();
@@ -146,7 +146,7 @@ const stylesheet = StyleSheet.create({
     borderColor: "black",
     width: "80%",
     marginBottom: 20,
-    marginTop: 20,
+    marginTop: 35,
   },
   HeaderText: {
     fontSize: 28,

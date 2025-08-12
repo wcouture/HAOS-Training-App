@@ -143,7 +143,7 @@ const stylesheet = StyleSheet.create({
     borderColor: "black",
     width: "80%",
     marginBottom: 20,
-    marginTop: 20,
+    marginTop: 35,
   },
   HeaderText: {
     fontSize: 28,

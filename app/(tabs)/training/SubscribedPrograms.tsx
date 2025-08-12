@@ -93,6 +93,6 @@ const stylesheets = StyleSheet.create({
 
   ProgramList: {
     maxHeight: "100%",
-    width: "100%",
+    width: "80%",
   },
 });
