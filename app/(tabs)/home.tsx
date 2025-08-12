@@ -34,7 +34,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeAreaView}>
-        <ScrollView>
+        <ScrollView style={styles.pageScrollView}>
           <View style={styles.sectionContainer}>
             <HeaderTitle style={styles.sectionHeader}>
               Upcoming Events
@@ -70,11 +70,10 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safeAreaView: {
-    paddingTop: 20,
-    paddingBottom: 20,
-
+    marginTop: 0,
     paddingLeft: 10,
     paddingRight: 10,
+    backgroundColor: "#fff",
   },
   sectionContainer: {
     marginTop: 20,
@@ -83,4 +82,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     fontSize: 20,
   },
+  pageScrollView: {
+    paddingTop: 20
+  }
 });

@@ -16,6 +16,7 @@ export default function SegmentDetails() {
   const params = useLocalSearchParams();
 
   useEffect(() => {
+    console.log("Loading Segment Details");
     const segmentId = params.id;
 
     SecureStore.getItemAsync("user").then((userData) => {
@@ -53,7 +54,6 @@ export default function SegmentDetails() {
     }
 
     if (user.completedSegments?.includes(parseInt(params.id as string))) {
-      console.log("Segment already complete");
       return;
     }
 

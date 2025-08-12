@@ -86,7 +86,6 @@ export default function CircuitDetails() {
   };
 
   const completeCircuit = async () => {
-    console.log("Completing Circuit");
     fetch(
       "https://haos.willc-dev.net/circuits/complete/" + user.id + "/" + params.id,
       {

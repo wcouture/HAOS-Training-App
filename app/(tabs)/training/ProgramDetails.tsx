@@ -54,10 +54,7 @@ export default function ProgramDetails() {
       return;
     }
 
-    console.log("Checking is segments complete");
-
     if (user.completedPrograms?.includes(programData?.id as number)) {
-      console.log("Program already completed");
       return;
     }
 
