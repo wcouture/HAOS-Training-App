@@ -128,17 +128,19 @@ const stylesheet = StyleSheet.create({
   },
 
   ActionButton: {
-    borderWidth: 3,
+    borderWidth: 2,
+    borderRadius: 5,
     borderStyle: "solid",
-    borderColor: "#C00",
+    borderColor: "#444",
+    backgroundColor: "#fff",
     maxWidth: "50%",
   },
 
   ActionButtonText: {
     textAlign: "center",
-    color: "#C00",
-    fontWeight: 800,
+    color: "#444",
+    fontWeight: 400,
     fontSize: 20,
-    padding: 10,
+    padding: 5,
   },
 });
