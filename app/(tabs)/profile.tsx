@@ -40,7 +40,7 @@ export default function Profile() {
           <Text style={stylesheet.PageTitle}>Member Details</Text>
           <View style={stylesheet.MemberDetailsContainer}>
             <Image
-              source={require("@/assets/images/react-logo.png")}
+              source={require("@/assets/images/HAOS-logo.png")}
               placeholder={blurhash}
               style={stylesheet.MemberImage}
             />
@@ -126,6 +126,8 @@ const stylesheet = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
     borderRadius: 10,
+    backgroundColor: "black",
+    padding: 20,
     width: 150,
     height: 150,
   },
