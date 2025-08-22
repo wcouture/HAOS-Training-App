@@ -2,8 +2,8 @@ import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Circuit } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
+import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -18,11 +18,10 @@ export default function ProgramDayDetails() {
     useCallback(() => {
       const programDayId = params.id;
 
-      SecureStore.getItemAsync("user").then((userData) => {
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-      });
+      let userData = GetCurrentUser();
+      if (userData) {
+        setUser(userData);
+      }
 
       fetch("https://haos.willc-dev.net/days/find/" + programDayId, {
         method: "GET",
@@ -77,8 +76,7 @@ export default function ProgramDayDetails() {
     })
       .then((response) => {
         if (response.ok) {
-          user.completedDays.push(parseInt(params.id as string));
-          SecureStore.setItemAsync("user", JSON.stringify(user));
+          CheckUserLogin(() => {}, (error) => { console.log(error); });
         } else {
           console.log("Error completing day: " + response.status);
         }

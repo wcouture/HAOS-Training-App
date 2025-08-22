@@ -1,47 +1,20 @@
-import { UserAccount } from "@/Models/UserAccount";
+import { CheckUserLogin } from "@/services/AccountService";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function LandingScreen() {
-  const updateUserInfo = async (userId: number) => {
-    fetch("https://haos.willc-dev.net/user/find/" + userId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "HAOSAPIauthorizationToken",
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error("Invalid login credentials.");
-        }
-      })
-      .then((data: UserAccount) => {
-        if (data.completedPrograms == undefined) data.completedPrograms = [];
-        if (data.completedSegments == undefined) data.completedSegments = [];
-        if (data.completedDays == undefined) data.completedDays = [];
-        if (data.completedCircuits == undefined) data.completedCircuits = [];
-        if (data.completedWorkouts == undefined) data.completedWorkouts = [];
-        SecureStore.setItemAsync("user", JSON.stringify(data));
-      });
-  };
-
-  const checkUserAuthentication = async () => {
-    const user = await SecureStore.getItemAsync("user");
-    if (user) {
-      await updateUserInfo(JSON.parse(user).id);
-      router.dismissAll;
-      router.replace("/home");
-    }
-  };
-
   useEffect(() => {
-    checkUserAuthentication();
+    CheckUserLogin(
+      () => {
+        router.dismissAll;
+        router.replace("/home");
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }, []);
 
   return (

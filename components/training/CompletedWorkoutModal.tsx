@@ -26,7 +26,9 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
       }
     );
     if (response.ok) {
+      console.log("Workout fetched successfully.");
       setWorkout(await response.json());
+      console.log("After setWorkout");
     } else {
       console.log("Error: " + response.status);
     }

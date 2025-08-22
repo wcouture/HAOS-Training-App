@@ -2,8 +2,8 @@ import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { TrainingProgram } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
+import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -42,11 +42,10 @@ export default function ProgramDetails() {
     useCallback(() => {
       const programId = parseInt(localParams.id as string);
 
-      SecureStore.getItemAsync("user").then((userData) => {
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-      });
+      let userData = GetCurrentUser();
+      if (userData) {
+        setUser(userData);
+      }
       loadProgramData(programId);
     }, [])
   );
@@ -59,8 +58,6 @@ export default function ProgramDetails() {
     if (user.completedPrograms?.includes(programData?.id as number)) {
       return;
     }
-
-    console.log(JSON.stringify(user.completedSegments));
 
     for (let i = 0; i < (programData?.segments.length as number); i++) {
       if (
@@ -85,8 +82,8 @@ export default function ProgramDetails() {
     )
       .then((response) => {
         if (response.ok) {
-          user.completedPrograms.push(programData?.id as number);
-          SecureStore.setItemAsync("user", JSON.stringify(user));
+          CheckUserLogin(() => {}, (error) => {
+            console.error(error)});
         }
       })
       .catch((error) => {

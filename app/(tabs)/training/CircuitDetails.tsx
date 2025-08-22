@@ -4,8 +4,8 @@ import CompleteWorkoutModal from "@/components/training/CompleteWorkoutModal";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ExerciseType, Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
+import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -55,13 +55,10 @@ export default function CircuitDetails() {
 
     if (response.ok) {
       completedWorkout = (await response.json()) as CompletedWorkout;
-      const userData = await SecureStore.getItemAsync("user");
+      CheckUserLogin(() => {
 
-      if (userData) {
-        const userObj: UserAccount = JSON.parse(userData);
-        userObj.completedWorkouts.push(completedWorkout);
+        const userObj: UserAccount = GetCurrentUser();
         setUser(userObj);
-        await SecureStore.setItemAsync("user", JSON.stringify(userObj));
 
         var fullComplete = true;
         for (var i = 0; i < workouts.length; i++) {
@@ -78,10 +75,15 @@ export default function CircuitDetails() {
         if (fullComplete) {
           completeCircuit();
         }
-      }
+        setSelectedWorkout({} as Workout);
+        setModalVisible(false);
+      }, (error) => { 
+        console.log(error); 
+        setSelectedWorkout({} as Workout);
+        setModalVisible(false);
+      });
 
-      setSelectedWorkout({} as Workout);
-      setModalVisible(false);
+      
     }
   };
 
@@ -97,14 +99,13 @@ export default function CircuitDetails() {
       }
     ).then((response) => {
       if (response.ok) {
-        SecureStore.getItemAsync("user").then((userData) => {
+        CheckUserLogin(() => {
+          let userData = GetCurrentUser();
           if (userData) {
-            const userObj = JSON.parse(userData);
-            userObj.completedCircuits.push(parseInt(params.id as string));
-            setUser(userObj);
-            SecureStore.setItemAsync("user", JSON.stringify(userObj));
+            setUser(userData);
+            CheckUserLogin(() => {}, (error) => { console.log(error); });
           }
-        });
+        }, (error) => { console.log(error); });
       }
     });
   };
@@ -114,12 +115,11 @@ export default function CircuitDetails() {
       const id = params.id;
       const index = parseInt(params.index as string);
 
-      SecureStore.getItemAsync("user").then((userData) => {
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-      });
-
+      let userData = GetCurrentUser();
+      if (userData) {
+        setUser(userData);
+      }
+      
       fetch("https://haos.willc-dev.net/circuits/find/" + id, {
         method: "GET",
         headers: {

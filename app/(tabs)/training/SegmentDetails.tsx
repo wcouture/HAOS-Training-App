@@ -2,8 +2,8 @@ import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ProgramDay } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
+import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -19,11 +19,10 @@ export default function SegmentDetails() {
     useCallback(() => {
       const segmentId = params.id;
 
-      SecureStore.getItemAsync("user").then((userData) => {
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-      });
+      let userData = GetCurrentUser();
+      if (userData) {
+        setUser(userData);
+      }
 
       fetch("https://haos.willc-dev.net/segments/find/" + segmentId, {
         method: "GET",
@@ -58,7 +57,6 @@ export default function SegmentDetails() {
       return;
     }
 
-    console.log(JSON.stringify(user.completedDays));
     for (let i = 0; i < programDays.length; i++) {
       if (!user.completedDays?.includes(programDays[i].id)) {
         return;
@@ -77,8 +75,7 @@ export default function SegmentDetails() {
     )
       .then((response) => {
         if (response.ok) {
-          user.completedSegments.push(parseInt(params.id as string));
-          SecureStore.setItemAsync("user", JSON.stringify(user));
+          CheckUserLogin(() => {}, (error) => { console.log(error); });
         } else {
           console.log("Error in Segment Details: " + response);
         }
