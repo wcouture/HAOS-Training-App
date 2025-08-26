@@ -3,6 +3,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { TrainingProgram } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
+import { getProgramData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -15,27 +16,15 @@ export default function ProgramDetails() {
   const [user, setUser] = useState({ id: -1 } as UserAccount);
 
   const loadProgramData = async (id: number) => {
-    fetch("https://haos.willc-dev.net/programs/find/" + id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "HAOSAPIauthorizationToken",
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error("Invalid login credentials.");
-        }
-      })
-      .then((data) => {
-        setProgramData(data);
-        setHeaderText(data.title);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let data = await getProgramData(id);
+    
+    if (data === null) {
+      console.log("Error loading program data for id: " + id);
+      return;
+    }
+
+    setProgramData(data);
+    setHeaderText(data.title);
   };
 
   useFocusEffect(

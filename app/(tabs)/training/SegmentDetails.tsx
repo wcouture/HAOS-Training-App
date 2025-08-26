@@ -3,6 +3,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ProgramDay } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
+import { getSegmentData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -15,6 +16,16 @@ export default function SegmentDetails() {
 
   const params = useLocalSearchParams();
 
+  const loadSegmentData = async (segmentId: number) => {
+    let data = await getSegmentData(segmentId);
+    if (data === null) {
+      console.log("Error loading segment data for id: " + segmentId);
+      return;
+    }
+    setProgramDays(data.days);
+    setHeaderText(data.title);
+  }
+
   useFocusEffect(
     useCallback(() => {
       const segmentId = params.id;
@@ -24,27 +35,7 @@ export default function SegmentDetails() {
         setUser(userData);
       }
 
-      fetch("https://haos.willc-dev.net/segments/find/" + segmentId, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "HAOSAPIauthorizationToken",
-        },
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json();
-          } else {
-            throw new Error("Invalid login credentials.");
-          }
-        })
-        .then((data) => {
-          setProgramDays(data.days);
-          setHeaderText(data.title);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      loadSegmentData(parseInt(segmentId as string));
     }, []) 
   );
 

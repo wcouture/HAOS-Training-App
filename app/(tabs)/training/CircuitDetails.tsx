@@ -5,6 +5,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ExerciseType, Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
+import { getCircuitData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -110,6 +111,16 @@ export default function CircuitDetails() {
     });
   };
 
+  const loadCircuitData = async (circuitId: number, index: number) => {
+    let data = await getCircuitData(circuitId);
+    if (data === null) {
+      console.log("Error loading circuit data for id: " + circuitId);
+      return;
+    }
+    setWorkouts(data.workouts);
+    setHeaderText("P" + (index + 1));
+  }
+
   useFocusEffect(
     useCallback(() => {
       const id = params.id;
@@ -120,24 +131,7 @@ export default function CircuitDetails() {
         setUser(userData);
       }
       
-      fetch("https://haos.willc-dev.net/circuits/find/" + id, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "HAOSAPIauthorizationToken",
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("Invalid login credentials.");
-          }
-        })
-        .then((data) => {
-          setHeaderText("P" + (index + 1));
-          setWorkouts(data.workouts);
-        });
+      loadCircuitData(parseInt(id as string), index);
     }, [])
   );
   return (

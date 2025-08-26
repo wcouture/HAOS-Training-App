@@ -3,6 +3,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Circuit } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
+import { getDayData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -14,6 +15,16 @@ export default function ProgramDayDetails() {
   const [headerText, setHeaderText] = useState<string>("");
   const params = useLocalSearchParams();
 
+  const loadDayData = async (dayId: number) => {
+    let data = await getDayData(dayId);
+    if (data === null) {
+      console.log("Error loading day data for id: " + dayId);
+      return;
+    }
+    setCircuits(data.circuits);
+    setHeaderText(data.title);
+  }
+
   useFocusEffect(
     useCallback(() => {
       const programDayId = params.id;
@@ -23,27 +34,7 @@ export default function ProgramDayDetails() {
         setUser(userData);
       }
 
-      fetch("https://haos.willc-dev.net/days/find/" + programDayId, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "HAOSAPIauthorizationToken",
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("Invalid login credentials.");
-          }
-        })
-        .then((data) => {
-          setCircuits(data.circuits);
-          setHeaderText(data.title);
-        })
-        .catch((error) => {
-          console.log("Error in Program Day Details: " + error);
-        });
+      loadDayData(parseInt(programDayId as string));
     }, [])
   );
 
