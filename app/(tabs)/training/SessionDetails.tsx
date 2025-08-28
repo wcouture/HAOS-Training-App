@@ -2,17 +2,18 @@ import ContentCard from "@/components/ContentCard";
 import CompletedWorkoutModal from "@/components/training/CompletedWorkoutModal";
 import CompleteWorkoutModal from "@/components/training/CompleteWorkoutModal";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { ExerciseType, Workout } from "@/Models/TrainingTypes";
+import { Circuit, ExerciseType, Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
-import { getCircuitData } from "@/services/ProgramDataService";
+import { getCircuitData, getSessionData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-export default function CircuitDetails() {
+export default function SessionDetails() {
   const [workouts, setWorkouts] = useState<Workout[]>([] as Workout[]);
+  const [circuits, setCircuits] = useState<Circuit[]>([] as Circuit[]);
   const [headerText, setHeaderText] = useState("");
   const [user, setUser] = useState({ id: -1 } as UserAccount);
 
@@ -88,6 +89,45 @@ export default function CircuitDetails() {
     }
   };
 
+  const checkSessionComplete = () => {
+    // If user hasn't completed any circuits or data hasn't loaded yet, return
+    if (!user.completedSessions) {
+      return;
+    }
+
+    // If this day already complete, return
+    if (user.completedSessions?.includes(parseInt(params.id as string))) {
+      return;
+    }
+
+    for (let i = 0; i < circuits.length; i++) {
+      // If any circuits aren't completed, return
+      if (!user.completedCircuits.includes(circuits[i].id)) {
+        return;
+      }
+    }
+
+    // All circuits are complete
+    // Mark this day as complete
+    fetch("https://haos.willc-dev.net/sessions/complete/" + user.id + "/" + params.id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "HAOSAPIauthorizationToken",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          CheckUserLogin(() => {}, (error) => { console.log(error); });
+        } else {
+          console.log("Error completing session: " + response.status);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   const completeCircuit = async () => {
     fetch(
       "https://haos.willc-dev.net/circuits/complete/" + user.id + "/" + params.id,
@@ -104,7 +144,7 @@ export default function CircuitDetails() {
           let userData = GetCurrentUser();
           if (userData) {
             setUser(userData);
-            CheckUserLogin(() => {}, (error) => { console.log(error); });
+            CheckUserLogin(() => {checkSessionComplete()}, (error) => { console.log(error); });
           }
         }, (error) => { console.log(error); });
       }
@@ -121,6 +161,16 @@ export default function CircuitDetails() {
     setHeaderText("P" + (index + 1));
   }
 
+  const loadSessionData = async (sessionId: number) => {
+    let data = await getSessionData(sessionId);
+    if (data === null) {
+      console.log("Error loading session data for id: " + sessionId);
+      return;
+    }
+    setCircuits(data.circuits);
+    setHeaderText(data.title);
+  }
+
   useFocusEffect(
     useCallback(() => {
       const id = params.id;
@@ -131,7 +181,7 @@ export default function CircuitDetails() {
         setUser(userData);
       }
       
-      loadCircuitData(parseInt(id as string), index);
+      loadSessionData(parseInt(id as string));
     }, [])
   );
   return (
@@ -148,35 +198,43 @@ export default function CircuitDetails() {
           </Pressable>
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
           <View style={stylesheet.workoutList}>
-            {workouts?.map((workout, index) => {
-              var completed = false;
-              const completedWorkoutIndex = user.completedWorkouts?.findIndex(
-                (w) => w.workoutId === workout.id
-              );
-              if (user && completedWorkoutIndex !== -1) {
-                completed = true;
-              }
+            {circuits.map((circuit) => {
               return (
-                <ContentCard
-                  index={index}
-                  key={workout.id}
-                  title={workout.exercise_?.name}
-                  description={workout.description}
-                  action={() => {
-                    if (!completed) {
-                      setSelectedWorkout(workout);
-                      setModalVisible(true);
-                    } else {
-                      setSelectedCompleteWorkout(
-                        user.completedWorkouts[completedWorkoutIndex]
-                      );
-                      setCompleteModalVisible(true);
+                <>
+                  {circuit.workouts?.map((workout, index) => {
+                    var completed = false;
+                    const completedWorkoutIndex = user.completedWorkouts?.findIndex(
+                      (w) => w.workoutId === workout.id
+                    );
+                    if (user && completedWorkoutIndex !== -1) {
+                      completed = true;
                     }
-                  }}
-                  checked={completed}
-                />
+                    return (
+                      <ContentCard
+                        index={index}
+                        key={workout.id}
+                        title={workout.exercise_?.name}
+                        description={workout.description}
+                        action={() => {
+                          if (!completed) {
+                            setSelectedWorkout(workout);
+                            setModalVisible(true);
+                          } else {
+                            setSelectedCompleteWorkout(
+                              user.completedWorkouts[completedWorkoutIndex]
+                            );
+                            setCompleteModalVisible(true);
+                          }
+                        }}
+                        checked={completed}
+                      />
+                    );
+                  })}
+                  <View style={stylesheet.separator}/>
+                </>
+                
               );
-            })}
+            })}    
           </View>
         </View>
         <CompleteWorkoutModal
@@ -228,5 +286,12 @@ const stylesheet = StyleSheet.create({
     left: 0,
     top: 0,
     zIndex: 1,
+  },
+
+  separator: {
+    borderBottomColor: 'rgba(0,0,0,0.2)',
+    borderBottomWidth: 1,
+    width: '80%',
+    marginVertical: 10,
   },
 });

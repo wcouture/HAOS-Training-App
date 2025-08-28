@@ -16,6 +16,7 @@ export type UserAccount = {
   completedWorkouts: CompletedWorkout[];
 
   completedCircuits: number[];
+  completedSessions: number[];
   completedDays: number[];
   completedSegments: number[];
   completedPrograms: number[];

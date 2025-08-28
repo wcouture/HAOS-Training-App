@@ -1,6 +1,6 @@
 import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Circuit } from "@/Models/TrainingTypes";
+import { Session } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
 import { getDayData } from "@/services/ProgramDataService";
@@ -10,7 +10,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProgramDayDetails() {
-  const [circuits, setCircuits] = useState<Circuit[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [user, setUser] = useState({ id: -1 } as UserAccount);
   const [headerText, setHeaderText] = useState<string>("");
   const params = useLocalSearchParams();
@@ -21,7 +21,7 @@ export default function ProgramDayDetails() {
       console.log("Error loading day data for id: " + dayId);
       return;
     }
-    setCircuits(data.circuits);
+    setSessions(data.sessions);
     setHeaderText(data.title);
   }
 
@@ -40,7 +40,7 @@ export default function ProgramDayDetails() {
 
   useEffect(() => {
     // If user hasn't completed any circuits or data hasn't loaded yet, return
-    if (!user.completedCircuits) {
+    if (!user.completedSessions) {
       return;
     }
 
@@ -49,9 +49,9 @@ export default function ProgramDayDetails() {
       return;
     }
 
-    for (let i = 0; i < circuits.length; i++) {
+    for (let i = 0; i < sessions.length; i++) {
       // If any circuits aren't completed, return
-      if (!user.completedCircuits.includes(circuits[i].id)) {
+      if (!user.completedSessions.includes(sessions[i].id)) {
         return;
       }
     }
@@ -75,7 +75,7 @@ export default function ProgramDayDetails() {
       .catch((error) => {
         console.log(error);
       });
-  }, [circuits]);
+  }, [sessions]);
   return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.container}>
@@ -90,23 +90,23 @@ export default function ProgramDayDetails() {
           </Pressable>
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
           <View style={stylesheet.circuitList}>
-            {circuits?.map((circuit, index) => {
+            {sessions?.map((session, index) => {
               var completed = false;
-              if (user && user.completedCircuits.includes(circuit.id)) {
+              if (user && user.completedSessions.includes(session.id)) {
                 completed = true;
               }
 
               return (
                 <ContentCard
                   index={index}
-                  key={circuit.id}
+                  key={session.id}
                   title={"P" + (index + 1)}
-                  description={circuit.description}
+                  description={session.title}
                   action={() => {
                     router.push({
-                      pathname: "/training/CircuitDetails",
+                      pathname: "/training/SessionDetails",
                       params: {
-                        id: circuit.id,
+                        id: session.id,
                         index: index,
                       },
                     });

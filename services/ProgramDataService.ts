@@ -1,4 +1,4 @@
-import { Circuit, ProgramDay, ProgramSegment, TrainingProgram } from "@/Models/TrainingTypes";
+import { Circuit, ProgramDay, ProgramSegment, Session, TrainingProgram } from "@/Models/TrainingTypes";
 
 export async function getSubsrcibedPrograms(userId: number): Promise<TrainingProgram[]> {
     // Mock data for demonstration purposes
@@ -55,6 +55,22 @@ export async function getDayData(dayId: number): Promise<ProgramDay | null> {
         let data = await response.json();
         return data as ProgramDay;
     }
+    return null;
+}
+
+export async function getSessionData(sessionId: number): Promise<Session | null> {
+    let response = await fetch("https://haos.willc-dev.net/sessions/find/" + sessionId, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "HAOSAPIauthorizationToken",
+        },  })
+    
+    if (response.ok) {
+        let data = await response.json();
+        return data as Session;
+    }
+
     return null;
 }
 

@@ -18,14 +18,21 @@ export type ProgramDay = {
   title: string;
   weekNum: number;
   segmentId: number;
-  circuits: Circuit[];
+  sessions: Session[];
 };
+
+export type Session = {
+  id: number;
+  title: string;
+  programDayId: number;
+  circuits: Circuit[];
+}
 
 export type Circuit = {
   id: number;
   description: string;
   rounds: number;
-  programDayId: number;
+  sessionId: number;
   workouts: Workout[];
 };
 
