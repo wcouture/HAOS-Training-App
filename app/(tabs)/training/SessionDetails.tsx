@@ -2,7 +2,7 @@ import ContentCard from "@/components/ContentCard";
 import CompletedWorkoutModal from "@/components/training/CompletedWorkoutModal";
 import CompleteWorkoutModal from "@/components/training/CompleteWorkoutModal";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Circuit, ExerciseType, Workout } from "@/Models/TrainingTypes";
+import { Circuit, Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
 import { getCircuitData, getSessionData } from "@/services/ProgramDataService";
@@ -27,21 +27,21 @@ export default function SessionDetails() {
 
   const params = useLocalSearchParams();
 
-  const completeWorkout = async (workoutId: number, userInput: number) => {
+  const completeWorkout = async (workoutId: number, userInput: number[]) => {
+    var workout = selectedWorkout;
+    if (workout.id !== workoutId) {
+      console.log("Error: workout id mismatch");
+      return;
+    }
+
     var completedWorkout: CompletedWorkout = {
       id: 0,
       workoutId: workoutId,
       userId: user.id,
       completedDate: new Date(),
-      weightUsed: 0,
-      duration: 0,
+      trackingType: workout.trackingType,
+      metrics: userInput,
     };
-
-    if (selectedWorkout.exercise_.type == ExerciseType.Strength) {
-      completedWorkout.weightUsed = userInput;
-    } else if (selectedWorkout.exercise_.type == ExerciseType.Endurance) {
-      completedWorkout.duration = userInput;
-    }
 
     const response = await fetch(
       "https://haos.willc-dev.net/userworkouts/add?userId=" + user.id,

@@ -1,4 +1,4 @@
-import { ExerciseType, Workout } from "@/Models/TrainingTypes";
+import { Workout, WorkoutTrackingType } from "@/Models/TrainingTypes";
 import React from "react";
 import {
   Modal,
@@ -17,33 +17,14 @@ type CompleteWorkoutParams = {
 };
 
 export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValues, setInputValues] = React.useState<string[]>([]as string[]);
   const [minuteValue, setMinuteValue] = React.useState("");
   const [secondValue, setSecondValue] = React.useState("");
 
   const generateInputs = () => {
-    const exerciseType = params.selectedWorkout?.exercise_?.type;
-    if (exerciseType === ExerciseType.Strength) {
-      return (
-        <>
-        <Text>Weight lifted: </Text>
-        <View style={stylesheet.ModalInputContainer}>
-          <TextInput
-            style={stylesheet.WorkoutDataInput}
-            value={inputValue}
-            onChangeText={setInputValue}
-            keyboardType="numeric"
-            placeholder="00"
-          />
-          <Text>
-            lbs
-          </Text>
-        </View>
-        </>
-        
-      );
-    }
-    return (<>
+    const trackingType = params.selectedWorkout?.trackingType;
+    if (trackingType === WorkoutTrackingType.Time) {
+      return (<>
         <Text>Time completed in: </Text>
         <View style={stylesheet.ModalInputContainer}>
           <TextInput
@@ -61,9 +42,27 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
             keyboardType="numeric"
             placeholder="00"/>
         </View>
-    </>
-    
-    );
+      </>);
+    }
+    const metrics = Array(params.selectedWorkout?.rounds).fill(0);
+    return (<>
+      <Text>Enter {params.selectedWorkout?.trackingType} completed per round:</Text>
+      {metrics.map((_, index) => (
+        <View key={index} style={stylesheet.ModalInputContainer}>
+          <Text>Round {index + 1}:</Text>
+          <TextInput
+            style={stylesheet.WorkoutDataInput}
+            value={inputValues[index] || ""}
+            onChangeText={(val) => {
+              inputValues[index] = val;
+              setInputValues(inputValues);
+            }}
+            keyboardType="numeric"
+            placeholder="0"
+          />
+        </View>
+      ))}
+    </>);
   };
 
   return (
@@ -88,13 +87,13 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
           <Pressable
             style={stylesheet.ModalButton}
             onPress={() => {
-              var userInput = parseInt(inputValue);
-              if (params.selectedWorkout?.exercise_?.type === ExerciseType.Endurance) {
-                userInput = parseInt(minuteValue) * 60 + parseInt(secondValue);
+              var userInput: number[] = inputValues.map((val) => parseInt(val));
+              if (params.selectedWorkout?.trackingType === WorkoutTrackingType.Time) {
+                userInput = [parseInt(minuteValue) * 60 + parseInt(secondValue)];
               }
               params.onComplete(params.selectedWorkout.id, userInput);
               params.setIsVisible(false);
-              setInputValue("");
+              setInputValues([]as string[]);
               setMinuteValue("");
               setSecondValue("");
             }}
