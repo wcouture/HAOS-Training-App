@@ -1,4 +1,4 @@
-import { TrainingProgram } from "./TrainingTypes";
+import { TrainingProgram, WorkoutTrackingType } from "./TrainingTypes";
 
 export enum UserType {
   Admin = 1,
@@ -16,6 +16,7 @@ export type UserAccount = {
   completedWorkouts: CompletedWorkout[];
 
   completedCircuits: number[];
+  completedSessions: number[];
   completedDays: number[];
   completedSegments: number[];
   completedPrograms: number[];
@@ -26,6 +27,6 @@ export type CompletedWorkout = {
   workoutId: number;
   userId: number;
   completedDate: Date;
-  weightUsed: number;
-  duration: number;
+  trackingType: WorkoutTrackingType;
+  metrics: number[];
 };

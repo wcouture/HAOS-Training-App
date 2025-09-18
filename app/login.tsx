@@ -1,6 +1,5 @@
-import { UserAccount, UserType } from "@/Models/UserAccount";
+import { LoginUser } from "@/services/AccountService";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -10,41 +9,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const authenticateUser = async () => {
-    const user: UserAccount = {
-      id: 0,
-      userType: UserType.User,
-      firstName: "",
-      lastName: "",
-      email: email,
-      password: password,
-      subscribedPrograms: [],
-      completedWorkouts: [],
-      completedCircuits: [],
-      completedDays: [],
-      completedSegments: [],
-      completedPrograms: [],
-    };
-    const payload = JSON.stringify(user);
-    fetch("https://haos.willc-dev.net/user/login", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "HAOSAPIauthorizationToken",
-      },
-      body: payload,
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Invalid login credentials.");
-        }
-      })
-      .then((data: UserAccount) => {
-        SecureStore.setItemAsync("user", JSON.stringify(data));
+    LoginUser(email, password, 
+      () => {
         router.dismissAll();
         router.replace("/home");
+      }, (msg) => {
+        console.error(msg);
+        alert("Login failed: " + msg);
       });
   };
 

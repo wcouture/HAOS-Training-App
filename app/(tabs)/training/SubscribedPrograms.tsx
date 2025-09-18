@@ -1,8 +1,8 @@
 import ContentCard from "@/components/ContentCard";
 import { TrainingProgram } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
+import { GetCurrentUser } from "@/services/AccountService";
 import { router, useFocusEffect } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -18,10 +18,9 @@ export default function Programs() {
   };
 
   const fetchUserInfo = async () => {
-    const userData = await SecureStore.getItemAsync("user");
-
+    const userData = GetCurrentUser();
     if (userData) {
-      setUser(JSON.parse(userData));
+      setUser(userData);
     }
   };
 

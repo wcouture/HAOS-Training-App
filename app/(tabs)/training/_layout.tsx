@@ -33,7 +33,7 @@ export default function TrainingLayout() {
           name="ProgramDayDetails"
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="CircuitDetails" options={{ headerShown: false }} />
+        <Stack.Screen name="SessionDetails" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>
   );

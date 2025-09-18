@@ -2,8 +2,9 @@ import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { TrainingProgram } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
+import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
+import { getProgramData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -15,38 +16,25 @@ export default function ProgramDetails() {
   const [user, setUser] = useState({ id: -1 } as UserAccount);
 
   const loadProgramData = async (id: number) => {
-    fetch("https://haos.willc-dev.net/programs/find/" + id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "HAOSAPIauthorizationToken",
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error("Invalid login credentials.");
-        }
-      })
-      .then((data) => {
-        setProgramData(data);
-        setHeaderText(data.title);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let data = await getProgramData(id);
+    
+    if (data === null) {
+      console.log("Error loading program data for id: " + id);
+      return;
+    }
+
+    setProgramData(data);
+    setHeaderText(data.title);
   };
 
   useFocusEffect(
     useCallback(() => {
       const programId = parseInt(localParams.id as string);
 
-      SecureStore.getItemAsync("user").then((userData) => {
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-      });
+      let userData = GetCurrentUser();
+      if (userData) {
+        setUser(userData);
+      }
       loadProgramData(programId);
     }, [])
   );
@@ -59,8 +47,6 @@ export default function ProgramDetails() {
     if (user.completedPrograms?.includes(programData?.id as number)) {
       return;
     }
-
-    console.log(JSON.stringify(user.completedSegments));
 
     for (let i = 0; i < (programData?.segments.length as number); i++) {
       if (
@@ -85,8 +71,8 @@ export default function ProgramDetails() {
     )
       .then((response) => {
         if (response.ok) {
-          user.completedPrograms.push(programData?.id as number);
-          SecureStore.setItemAsync("user", JSON.stringify(user));
+          CheckUserLogin(() => {}, (error) => {
+            console.error(error)});
         }
       })
       .catch((error) => {

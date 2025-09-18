@@ -78,7 +78,7 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
               {"Time Spent: "}
             </Text>
             <Text style={stylesheet.ModalDataLabel}>
-               {Math.floor(params.completedWorkout.duration / 60)} : {params.completedWorkout.duration % 60} s
+               {Math.floor(params.completedWorkout.duration / 60)} : {String(params.completedWorkout.duration % 60).padStart(3)} s
             </Text>
             </>
           )}

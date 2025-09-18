@@ -1,7 +1,7 @@
 import { UserAccount } from "@/Models/UserAccount";
+import { GetCurrentUser, LogoutUser } from "@/services/AccountService";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -17,15 +17,16 @@ export default function Profile() {
   };
 
   const logout = async () => {
-    await SecureStore.deleteItemAsync("user");
-    router.replace("/");
+    LogoutUser( () => {
+      router.replace("/");
+    });
   };
 
   const getUserInfo = async () => {
-    const userData = await SecureStore.getItemAsync("user");
+    const userData = GetCurrentUser();
 
     if (userData) {
-      setUser(JSON.parse(userData));
+      setUser(userData);
     }
   };
 
@@ -40,7 +41,7 @@ export default function Profile() {
           <Text style={stylesheet.PageTitle}>Member Details</Text>
           <View style={stylesheet.MemberDetailsContainer}>
             <Image
-              source={require("@/assets/images/react-logo.png")}
+              source={require("@/assets/images/HAOS-logo.png")}
               placeholder={blurhash}
               style={stylesheet.MemberImage}
             />
@@ -126,6 +127,8 @@ const stylesheet = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
     borderRadius: 10,
+    backgroundColor: "black",
+    padding: 20,
     width: 150,
     height: 150,
   },

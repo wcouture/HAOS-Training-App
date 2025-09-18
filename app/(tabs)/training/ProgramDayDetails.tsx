@@ -1,56 +1,46 @@
 import ContentCard from "@/components/ContentCard";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Circuit } from "@/Models/TrainingTypes";
+import { Session } from "@/Models/TrainingTypes";
 import { UserAccount } from "@/Models/UserAccount";
+import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
+import { getDayData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProgramDayDetails() {
-  const [circuits, setCircuits] = useState<Circuit[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [user, setUser] = useState({ id: -1 } as UserAccount);
   const [headerText, setHeaderText] = useState<string>("");
   const params = useLocalSearchParams();
+
+  const loadDayData = async (dayId: number) => {
+    let data = await getDayData(dayId);
+    if (data === null) {
+      console.log("Error loading day data for id: " + dayId);
+      return;
+    }
+    setSessions(data.sessions);
+    setHeaderText(data.title);
+  }
 
   useFocusEffect(
     useCallback(() => {
       const programDayId = params.id;
 
-      SecureStore.getItemAsync("user").then((userData) => {
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-      });
+      let userData = GetCurrentUser();
+      if (userData) {
+        setUser(userData);
+      }
 
-      fetch("https://haos.willc-dev.net/days/find/" + programDayId, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "HAOSAPIauthorizationToken",
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("Invalid login credentials.");
-          }
-        })
-        .then((data) => {
-          setCircuits(data.circuits);
-          setHeaderText(data.title);
-        })
-        .catch((error) => {
-          console.log("Error in Program Day Details: " + error);
-        });
+      loadDayData(parseInt(programDayId as string));
     }, [])
   );
 
   useEffect(() => {
     // If user hasn't completed any circuits or data hasn't loaded yet, return
-    if (!user.completedCircuits) {
+    if (!user.completedSessions) {
       return;
     }
 
@@ -59,9 +49,9 @@ export default function ProgramDayDetails() {
       return;
     }
 
-    for (let i = 0; i < circuits.length; i++) {
+    for (let i = 0; i < sessions.length; i++) {
       // If any circuits aren't completed, return
-      if (!user.completedCircuits.includes(circuits[i].id)) {
+      if (!user.completedSessions.includes(sessions[i].id)) {
         return;
       }
     }
@@ -77,8 +67,7 @@ export default function ProgramDayDetails() {
     })
       .then((response) => {
         if (response.ok) {
-          user.completedDays.push(parseInt(params.id as string));
-          SecureStore.setItemAsync("user", JSON.stringify(user));
+          CheckUserLogin(() => {}, (error) => { console.log(error); });
         } else {
           console.log("Error completing day: " + response.status);
         }
@@ -86,7 +75,7 @@ export default function ProgramDayDetails() {
       .catch((error) => {
         console.log(error);
       });
-  }, [circuits]);
+  }, [sessions]);
   return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.container}>
@@ -101,23 +90,23 @@ export default function ProgramDayDetails() {
           </Pressable>
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
           <View style={stylesheet.circuitList}>
-            {circuits?.map((circuit, index) => {
+            {sessions?.map((session, index) => {
               var completed = false;
-              if (user && user.completedCircuits.includes(circuit.id)) {
+              if (user && user.completedSessions.includes(session.id)) {
                 completed = true;
               }
 
               return (
                 <ContentCard
                   index={index}
-                  key={circuit.id}
+                  key={session.id}
                   title={"P" + (index + 1)}
-                  description={circuit.description}
+                  description={session.title}
                   action={() => {
                     router.push({
                       pathname: "/training/CircuitDetails",
                       params: {
-                        id: circuit.id,
+                        id: session.id,
                         index: index,
                       },
                     });
