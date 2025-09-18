@@ -24,9 +24,7 @@ export default function Login() {
       completedSegments: [],
       completedPrograms: [],
     };
-
     const payload = JSON.stringify(user);
-
     fetch("https://haos.willc-dev.net/user/login", {
       method: "POST",
       headers: {
