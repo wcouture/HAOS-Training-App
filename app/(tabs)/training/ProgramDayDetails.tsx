@@ -45,6 +45,7 @@ export default function ProgramDayDetails() {
     }
 
     // If this day already complete, return
+    user.completedDays ??= [];
     if (user.completedDays?.includes(parseInt(params.id as string))) {
       return;
     }
@@ -92,6 +93,7 @@ export default function ProgramDayDetails() {
           <View style={stylesheet.circuitList}>
             {sessions?.map((session, index) => {
               var completed = false;
+              user.completedSessions ??= [];
               if (user && user.completedSessions.includes(session.id)) {
                 completed = true;
               }
