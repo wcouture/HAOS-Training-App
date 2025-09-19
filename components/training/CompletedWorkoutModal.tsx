@@ -1,4 +1,4 @@
-import { Workout } from "@/Models/TrainingTypes";
+import { getExerciseTypeString, Workout, WorkoutTrackingType } from "@/Models/TrainingTypes";
 import { CompletedWorkout } from "@/Models/UserAccount";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
@@ -32,6 +32,28 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
     }
   };
 
+  const renderMetrics = (metric: number) => {
+    return(<>
+      <Text style={stylesheet.ModalDataHeader}>
+        {getExerciseTypeString(workout?.trackingType) + ": "}
+      </Text>
+      <Text style={stylesheet.ModalDataLabel}>
+        {metric}
+      </Text>
+    </>)
+  }
+
+  const renderTimeMetrics = (metric: number) => {
+    return(<>
+      <Text style={stylesheet.ModalDataHeader}>
+        {"Time Spent: "}
+      </Text>
+      <Text style={stylesheet.ModalDataLabel}>
+        {Math.floor(metric / 60)} : {String(metric % 60).padStart(3)} s
+      </Text> 
+    </>)
+  }
+
   useEffect(() => {
     const wId = params.completedWorkout.workoutId;
     if (wId) {
@@ -62,26 +84,14 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
           </Text>
         </View>
         <View style={stylesheet.ModalInputSection}>
-          {workout?.exercise_?.type === ExerciseType.Strength ? (
-            <>
-            <Text style={stylesheet.ModalDataHeader}>
-              {"Weight Used"}
-            </Text>
-            <Text style={stylesheet.ModalDataLabel}>
-              {params.completedWorkout.weightUsed}
-            </Text>
-            </>
-            
-          ) : (
-            <>
-            <Text style={stylesheet.ModalDataHeader}>
-              {"Time Spent: "}
-            </Text>
-            <Text style={stylesheet.ModalDataLabel}>
-               {Math.floor(params.completedWorkout.duration / 60)} : {String(params.completedWorkout.duration % 60).padStart(3)} s
-            </Text>
-            </>
-          )}
+            {params.completedWorkout.metrics.map((metric, index) => {
+              if (workout.trackingType === WorkoutTrackingType.Time) {
+                return renderTimeMetrics(metric);
+              }
+              else {
+                return renderMetrics(metric);
+              }
+            })}
         </View>
         <View style={stylesheet.ModalButtonSection}>
           <Pressable
