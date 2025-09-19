@@ -104,7 +104,7 @@ export default function ProgramDayDetails() {
                   description={session.title}
                   action={() => {
                     router.push({
-                      pathname: "/training/CircuitDetails",
+                      pathname: "/training/SessionDetails",
                       params: {
                         id: session.id,
                         index: index,
