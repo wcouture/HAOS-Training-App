@@ -1,4 +1,4 @@
-import { ExerciseType, Workout } from "@/Models/TrainingTypes";
+import { Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout } from "@/Models/UserAccount";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";

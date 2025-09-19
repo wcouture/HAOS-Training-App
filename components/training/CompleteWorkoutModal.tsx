@@ -1,4 +1,4 @@
-import { Workout, WorkoutTrackingType } from "@/Models/TrainingTypes";
+import { getExerciseTypeString, Workout, WorkoutTrackingType } from "@/Models/TrainingTypes";
 import React from "react";
 import {
   Modal,
@@ -44,9 +44,16 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
         </View>
       </>);
     }
+    else if (trackingType === WorkoutTrackingType.Completed) {
+      return (
+      <>
+        <Text>This workout is marked as completed.</Text>
+        <Text>No additional input is required.</Text>
+      </>);
+    }
     const metrics = Array(params.selectedWorkout?.rounds).fill(0);
     return (<>
-      <Text>Enter {params.selectedWorkout?.trackingType} completed per round:</Text>
+      <Text>Enter {getExerciseTypeString(params.selectedWorkout?.trackingType)} completed per round:</Text>
       {metrics.map((_, index) => (
         <View key={index} style={stylesheet.ModalInputContainer}>
           <Text>Round {index + 1}:</Text>
