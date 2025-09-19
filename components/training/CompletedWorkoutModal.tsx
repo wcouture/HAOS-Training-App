@@ -84,7 +84,7 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
           </Text>
         </View>
         <View style={stylesheet.ModalInputSection}>
-            {params.completedWorkout.metrics.map((metric, index) => {
+            {params.completedWorkout?.metrics?.map((metric, index) => {
               if (workout.trackingType === WorkoutTrackingType.Time) {
                 return renderTimeMetrics(metric);
               }
