@@ -39,7 +39,7 @@ export default function SessionDetails() {
       workoutId: workoutId,
       userId: user.id,
       completedDate: new Date(),
-      trackingType: workout.trackingType,
+      trackingType: workout.trackingType_,
       metrics: userInput,
     };
 
@@ -58,6 +58,7 @@ export default function SessionDetails() {
     if (response.ok) {
       completedWorkout = (await response.json()) as CompletedWorkout;
       CheckUserLogin(() => {
+        console.log("Workout completed successfully");
 
         const userObj: UserAccount = GetCurrentUser();
         setUser(userObj);
@@ -71,6 +72,7 @@ export default function SessionDetails() {
             )
           ) {
             fullComplete = false;
+            console.log("Not complete: " + workouts[i].id);
             break;
           }
         }
@@ -90,9 +92,10 @@ export default function SessionDetails() {
   };
 
   const checkSessionComplete = () => {
+    console.log("Checking session complete");
     // If user hasn't completed any circuits or data hasn't loaded yet, return
     if (!user.completedSessions) {
-      return;
+      user.completedSessions = [];
     }
 
     // If this day already complete, return
@@ -103,12 +106,13 @@ export default function SessionDetails() {
     for (let i = 0; i < circuits.length; i++) {
       // If any circuits aren't completed, return
       if (!user.completedCircuits.includes(circuits[i].id)) {
+        console.log("Not all circuits in session complete");
         return;
       }
     }
 
     // All circuits are complete
-    // Mark this day as complete
+    // Mark this session as complete
     fetch("https://haos.willc-dev.net/sessions/complete/" + user.id + "/" + params.id, {
       method: "POST",
       headers: {
@@ -141,12 +145,15 @@ export default function SessionDetails() {
     ).then((response) => {
       if (response.ok) {
         CheckUserLogin(() => {
+          console.log("Circuit completed successfully");
           let userData = GetCurrentUser();
           if (userData) {
             setUser(userData);
             CheckUserLogin(() => {checkSessionComplete()}, (error) => { console.log(error); });
           }
         }, (error) => { console.log(error); });
+      }else {
+        console.log("Error completing circuit: " + response.status);
       }
     });
   };
@@ -200,8 +207,9 @@ export default function SessionDetails() {
           <View style={stylesheet.workoutList}>
             {circuits.map((circuit) => {
               return (
-                <>
+                <View key={circuit.id}>
                   {circuit.workouts?.map((workout, index) => {
+                    console.log(JSON.stringify(workout))
                     var completed = false;
                     const completedWorkoutIndex = user.completedWorkouts?.findIndex(
                       (w) => w.workoutId === workout.id
@@ -231,7 +239,7 @@ export default function SessionDetails() {
                     );
                   })}
                   <View style={stylesheet.separator}/>
-                </>
+                </View>
                 
               );
             })}    

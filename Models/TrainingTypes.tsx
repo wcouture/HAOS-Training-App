@@ -41,7 +41,7 @@ export type Workout = {
   circuitId: number;
   exercise_: Exercise;
   rounds: number;
-  trackingType: WorkoutTrackingType;
+  trackingType_: WorkoutTrackingType;
 };
 
 export type Exercise = {

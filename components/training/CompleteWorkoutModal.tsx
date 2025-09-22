@@ -22,7 +22,7 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
   const [secondValue, setSecondValue] = React.useState("");
 
   const generateInputs = () => {
-    const trackingType = params.selectedWorkout?.trackingType;
+    const trackingType = params.selectedWorkout?.trackingType_;
     if (trackingType === WorkoutTrackingType.Time) {
       return (<>
         <Text>Time completed in: </Text>
@@ -53,7 +53,7 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
     }
     const metrics = Array(params.selectedWorkout?.rounds).fill(0);
     return (<>
-      <Text>Enter {getExerciseTypeString(params.selectedWorkout?.trackingType)} completed per round:</Text>
+      <Text>Enter {getExerciseTypeString(params.selectedWorkout?.trackingType_)} completed per round:</Text>
       {metrics.map((_, index) => (
         <View key={index} style={stylesheet.ModalInputContainer}>
           <Text>Round {index + 1}:</Text>
@@ -95,7 +95,7 @@ export default function CompleteWorkoutModal(params: CompleteWorkoutParams) {
             style={stylesheet.ModalButton}
             onPress={() => {
               var userInput: number[] = inputValues.map((val) => parseInt(val));
-              if (params.selectedWorkout?.trackingType === WorkoutTrackingType.Time) {
+              if (params.selectedWorkout?.trackingType_ === WorkoutTrackingType.Time) {
                 userInput = [parseInt(minuteValue) * 60 + parseInt(secondValue)];
               }
               params.onComplete(params.selectedWorkout.id, userInput);
