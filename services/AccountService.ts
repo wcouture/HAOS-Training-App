@@ -15,6 +15,7 @@ const CURRENT_USER = {
     completedDays: [] as number[],
     completedSegments: [] as number[],
     completedPrograms: [] as number[],
+    completedSessions: [] as number[],
 }
 
 export function GetCurrentUser(): UserAccount {
@@ -35,6 +36,7 @@ export function LoginUser(email: string, password: string, success: () => void, 
         completedDays: [],
         completedSegments: [],
         completedPrograms: [],
+        completedSessions: [],
       };
     const payload = JSON.stringify(user);
 
@@ -107,6 +109,7 @@ async function UpdateUserInfo (userId: number) {
         if (data.completedDays == undefined) data.completedDays = [];
         if (data.completedCircuits == undefined) data.completedCircuits = [];
         if (data.completedWorkouts == undefined) data.completedWorkouts = [];
+        if (data.completedSessions == undefined) data.completedSessions = [];
         SetUserData(data);
     }
 }
@@ -123,5 +126,6 @@ function SetUserData(data: UserAccount) {
     CURRENT_USER.completedDays = data.completedDays;
     CURRENT_USER.completedSegments = data.completedSegments;
     CURRENT_USER.completedPrograms = data.completedPrograms;
+    CURRENT_USER.completedSessions = data.completedSessions;
 }
 

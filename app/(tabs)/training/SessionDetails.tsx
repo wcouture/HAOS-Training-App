@@ -7,7 +7,7 @@ import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
 import { getCircuitData, getSessionData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -58,26 +58,24 @@ export default function SessionDetails() {
     if (response.ok) {
       completedWorkout = (await response.json()) as CompletedWorkout;
       CheckUserLogin(() => {
-        console.log("Workout completed successfully");
-
         const userObj: UserAccount = GetCurrentUser();
         setUser(userObj);
 
-        var fullComplete = true;
-        for (var i = 0; i < workouts.length; i++) {
-          console.log(workouts[i].id);
-          if (
-            !userObj.completedWorkouts.find(
-              (x) => x.workoutId == workouts[i].id
-            )
-          ) {
-            fullComplete = false;
-            console.log("Not complete: " + workouts[i].id);
-            break;
+        for (var j = 0; j < circuits.length; j++) {
+          var fullComplete = true;
+          for (var i = 0; i < circuits[j].workouts.length; i++) {
+            if (
+              !userObj.completedWorkouts.find(
+                (x) => x.workoutId == circuits[j].workouts[i].id
+              )
+            ) {
+              fullComplete = false;
+              break;
+            }
           }
-        }
-        if (fullComplete) {
-          completeCircuit();
+          if (fullComplete) {
+            completeCircuit(circuits[j].id);
+          }
         }
         setSelectedWorkout({} as Workout);
         setModalVisible(false);
@@ -91,12 +89,10 @@ export default function SessionDetails() {
     }
   };
 
-  const checkSessionComplete = () => {
-    console.log("Checking session complete");
+  const checkSessionComplete = async () => {
+    console.log("Completed sessions: " + JSON.stringify(user.completedSessions));
     // If user hasn't completed any circuits or data hasn't loaded yet, return
-    if (!user.completedSessions) {
-      user.completedSessions = [];
-    }
+    user.completedCircuits ??= [];
 
     // If this day already complete, return
     if (user.completedSessions?.includes(parseInt(params.id as string))) {
@@ -132,9 +128,9 @@ export default function SessionDetails() {
       });
   }
 
-  const completeCircuit = async () => {
+  const completeCircuit = async (circuitId: Number) => {
     fetch(
-      "https://haos.willc-dev.net/circuits/complete/" + user.id + "/" + params.id,
+      "https://haos.willc-dev.net/circuits/complete/" + user.id + "/" + circuitId,
       {
         method: "POST",
         headers: {
@@ -182,15 +178,24 @@ export default function SessionDetails() {
     useCallback(() => {
       const id = params.id;
       const index = parseInt(params.index as string);
-
-      let userData = GetCurrentUser();
-      if (userData) {
-        setUser(userData);
-      }
       
-      loadSessionData(parseInt(id as string));
+      CheckUserLogin(() => {
+        let userData = GetCurrentUser();
+        if (userData) {
+          setUser(userData);
+        }
+        
+        loadSessionData(parseInt(id as string));
+      }, (error) => { console.log(error) });
     }, [])
   );
+
+  useEffect(() => {
+    if (user.id === -1) {
+      return;
+    }
+    checkSessionComplete();
+  }, [circuits])
   return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.container}>
@@ -209,7 +214,6 @@ export default function SessionDetails() {
               return (
                 <View key={circuit.id}>
                   {circuit.workouts?.map((workout, index) => {
-                    console.log(JSON.stringify(workout))
                     var completed = false;
                     const completedWorkoutIndex = user.completedWorkouts?.findIndex(
                       (w) => w.workoutId === workout.id

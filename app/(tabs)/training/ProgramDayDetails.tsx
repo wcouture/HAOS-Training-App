@@ -40,9 +40,7 @@ export default function ProgramDayDetails() {
 
   useEffect(() => {
     // If user hasn't completed any circuits or data hasn't loaded yet, return
-    if (!user.completedSessions) {
-      return;
-    }
+    user.completedSessions ??= [];
 
     // If this day already complete, return
     user.completedDays ??= [];
@@ -51,14 +49,15 @@ export default function ProgramDayDetails() {
     }
 
     for (let i = 0; i < sessions.length; i++) {
-      // If any circuits aren't completed, return
+      // If any sessions aren't completed, return
       if (!user.completedSessions.includes(sessions[i].id)) {
         return;
       }
     }
 
-    // All circuits are complete
+    // All sessions are complete
     // Mark this day as complete
+    console.log("Marking day complete: " + params.id);
     fetch("https://haos.willc-dev.net/days/complete/" + user.id + "/" + params.id, {
       method: "POST",
       headers: {
