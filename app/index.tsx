@@ -1,15 +1,37 @@
 import { CheckUserLogin } from "@/services/AccountService";
+import { useEventListener } from "expo";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useVideoPlayer, VideoPlayerStatus, VideoView } from "expo-video";
+import React, { useEffect, useState } from "react";
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+
+const splashScreenSource = '@/assets/splash.mp4';
+const assetID = require(splashScreenSource)
+
 export default function LandingScreen() {
+  const [splashScreenPlaying, setSplashScreenPlaying] = useState(null as VideoPlayerStatus | null);
+  const [loggedIn, setLoggedIn] = useState(false);
+  
+  const splashPlayer = useVideoPlayer(assetID, splashPlayer => {
+    splashPlayer.loop = false;
+    splashPlayer.play()
+  });
+
+  useEventListener(splashPlayer, 'statusChange', ({ status, error }) => {
+    console.log('Player status changed: ', status);
+    setSplashScreenPlaying(status);
+  });
+
   useEffect(() => {
+    if (splashScreenPlaying) {
+      return;
+    }
+
     CheckUserLogin(
       () => {
-        router.dismissAll;
-        router.replace("/home");
+        setLoggedIn(true);
       },
       (error) => {
         console.error(error);
@@ -17,7 +39,15 @@ export default function LandingScreen() {
     );
   }, []);
 
-  return (
+  useEffect(() => {
+    if (loggedIn && splashScreenPlaying == "idle") {
+      router.dismissAll;
+      router.replace("/home");
+    }
+  }, [splashScreenPlaying]);
+
+  const landing_screen = () => { 
+    return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.PageView}>
         <View style={stylesheet.PageRow}>
@@ -25,7 +55,7 @@ export default function LandingScreen() {
             <Text style={stylesheet.MainTitle}>HAOS</Text>
             <Text style={stylesheet.SubTitle}>Your #1 Training Team</Text>
             <Text style={stylesheet.SubText}>
-              For anybody and any race. HAOS is teh academy for high performers.
+              For anybody and any race. HAOS is the academy for high performers.
             </Text>
           </View>
         </View>
@@ -56,11 +86,30 @@ export default function LandingScreen() {
 
         <View style={stylesheet.PageRow}></View>
       </SafeAreaView>
+    </SafeAreaProvider>);
+    }
+
+  if (splashScreenPlaying != "idle" || !loggedIn) {
+    return (
+    <SafeAreaProvider>
+      <SafeAreaView style={stylesheet.PageView}>
+        <VideoView nativeControls={false} player={splashPlayer} style={stylesheet.splashScreenPlayer}/>
+      </SafeAreaView>
     </SafeAreaProvider>
   );
+  }
+  else {
+    return landing_screen();
+  }
 }
 
 const stylesheet = StyleSheet.create({
+  splashScreenPlayer: {
+    flex: 1,
+    height: "120%",
+    backgroundColor: "#000",
+  },
+
   PageView: {
     flex: 1,
     backgroundColor: "#fff",

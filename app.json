@@ -38,7 +38,10 @@
         }
       ],
       "expo-secure-store",
-      "expo-video"
+      ["expo-video", {
+        "supportsBackgroundPlayback": false,
+        "supportsPictureInPicture": false
+      }]
     ],
     "experiments": {
       "typedRoutes": true
