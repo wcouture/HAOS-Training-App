@@ -48,6 +48,8 @@ export type Exercise = {
   id: number;
   name: string;
   demoUrl: string;
+  showDemo: boolean;
+  premiumDemo: boolean;
 };
 
 export enum WorkoutTrackingType {
