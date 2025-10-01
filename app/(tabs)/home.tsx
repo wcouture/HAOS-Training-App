@@ -40,14 +40,19 @@ export default function HomeScreen() {
               Exercise Demos
             </HeaderTitle>
             <View style={styles.exerciseDemoContainer}>
-              {exercises?.map((exercise) => (
+              {exercises?.map((exercise) => {
+                if (!exercise.showDemo) {
+                  return null;
+                }
+
+                return (
                 <InfoCard
                   key={exercise.id}
                   title={exercise.name}
                   description={""}
                   embedSource={exercise.demoUrl}
-                />
-              ))}
+                />)
+              })}
             </View>
           </View>
           <View></View>
