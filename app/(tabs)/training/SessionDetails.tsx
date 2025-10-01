@@ -5,7 +5,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Circuit, Workout } from "@/Models/TrainingTypes";
 import { CompletedWorkout, UserAccount } from "@/Models/UserAccount";
 import { CheckUserLogin, GetCurrentUser } from "@/services/AccountService";
-import { getCircuitData, getSessionData } from "@/services/ProgramDataService";
+import { getSessionData } from "@/services/ProgramDataService";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -154,16 +154,6 @@ export default function SessionDetails() {
     });
   };
 
-  const loadCircuitData = async (circuitId: number, index: number) => {
-    let data = await getCircuitData(circuitId);
-    if (data === null) {
-      console.log("Error loading circuit data for id: " + circuitId);
-      return;
-    }
-    setWorkouts(data.workouts);
-    setHeaderText("P" + (index + 1));
-  }
-
   const loadSessionData = async (sessionId: number) => {
     let data = await getSessionData(sessionId);
     if (data === null) {
@@ -305,5 +295,6 @@ const stylesheet = StyleSheet.create({
     borderBottomWidth: 1,
     width: '80%',
     marginVertical: 10,
+    alignSelf: 'center',
   },
 });
