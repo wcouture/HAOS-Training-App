@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "bundleIdentifier": "com.wcouture18.HAOS"
     },
     "android": {
       "adaptiveIcon": {

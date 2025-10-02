@@ -34,11 +34,11 @@ export default function HomeScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeAreaView}>
-        <ScrollView style={styles.pageScrollView}>
           <View style={styles.sectionContainer}>
             <HeaderTitle style={styles.sectionHeader}>
               Exercise Demos
             </HeaderTitle>
+            <ScrollView style={styles.pageScrollView}>
             <View style={styles.exerciseDemoContainer}>
               {exercises?.map((exercise) => {
                 if (!exercise.showDemo) {
@@ -54,9 +54,9 @@ export default function HomeScreen() {
                 />)
               })}
             </View>
+            </ScrollView>
           </View>
           <View></View>
-        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -65,28 +65,26 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeAreaView: {
     marginTop: 0,
-    paddingLeft: 10,
-    paddingRight: 10,
-    backgroundColor: "#fff",
+    backgroundColor: "#rgba(170, 11, 11, 1)",
   },
   sectionContainer: {
     marginTop: 10,
   },
   sectionHeader: {
-    marginLeft: 10,
-    paddingLeft: 10,
-    paddingRight: 20,
-    marginBottom: 10,
+    paddingBottom: 10,
     textAlign: "center",
     fontSize: 28,
     fontWeight: "700",
-    borderBottomColor: "rgba(0,0,0,0.3)",
-    borderBottomWidth: 1,
-    width: "95%",
+    borderBottomColor: "rgba(136, 12, 12, 1)",
+    color: "#fff",
+    borderBottomWidth: 2,
+    width: "100%",
   },
   pageScrollView: {
+    backgroundColor: "#fff",
     paddingTop: 20,
     flexDirection: "column",
+    boxShadow: "1px 1px 5px 5px rgba(0, 0, 0, 0.2) inset",
   },
   exerciseDemoContainer: {
     flexDirection: "row",

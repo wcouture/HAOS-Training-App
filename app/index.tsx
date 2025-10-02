@@ -89,7 +89,7 @@ export default function LandingScreen() {
     </SafeAreaProvider>);
     }
 
-  if (splashScreenPlaying != "idle" || !loggedIn) {
+  if (splashScreenPlaying != "idle") {
     return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.PageView}>
