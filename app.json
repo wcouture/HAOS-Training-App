@@ -38,13 +38,22 @@
         }
       ],
       "expo-secure-store",
-      ["expo-video", {
-        "supportsBackgroundPlayback": false,
-        "supportsPictureInPicture": false
-      }]
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": false,
+          "supportsPictureInPicture": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "22886e7d-3456-4cb5-b5d6-cce789c565a4"
+      }
     }
   }
 }
