@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   sectionHeader: {
-    paddingBottom: 10,
+    paddingBottom: 15,
     textAlign: "center",
     fontSize: 28,
     fontWeight: "700",
