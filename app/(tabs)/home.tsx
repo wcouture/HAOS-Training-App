@@ -65,7 +65,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeAreaView: {
     marginTop: 0,
-    backgroundColor: "#rgba(170, 11, 11, 1)",
+    backgroundColor: "rgba(170, 11, 11, 1)",
   },
   sectionContainer: {
     marginTop: 10,

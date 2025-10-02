@@ -90,9 +90,10 @@ export default function ProgramDetails() {
               router.back();
             }}
           >
-            <IconSymbol size={28} name="chevron.left" color="black" />
+            <IconSymbol size={28} name="chevron.left" color="white" />
           </Pressable>
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
+        </View>
           <View style={stylesheet.SegmentList}>
             {programData?.segments.map((segment, index) => {
               var completed = user?.completedSegments.includes(segment.id);
@@ -113,7 +114,7 @@ export default function ProgramDetails() {
               );
             })}
           </View>
-        </View>
+        
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -121,34 +122,42 @@ export default function ProgramDetails() {
 
 const stylesheet = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "flex-start",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(170, 11, 11, 1)",
     alignItems: "center",
-    backgroundColor: "#fff",
+    justifyContent: "flex-start",
   },
   HeaderContainer: {
     alignItems: "center",
     borderColor: "black",
     width: "80%",
-    marginBottom: 20,
     marginTop: 35,
   },
   HeaderText: {
     fontSize: 28,
     fontWeight: 800,
     textAlign: "center",
+    paddingBottom: 20,
+    color: "#fff",
     width: "100%",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0,0,0,0.2)",
-    paddingBottom: 10,
   },
 
   SegmentList: {
     width: "100%",
+    height: "100%",
+    backgroundColor: "#fff",
+    boxShadow: "1px 1px 5px 5px rgba(0, 0, 0, 0.2) inset",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 20,
   },
 
   backButton: {
     position: "absolute",
+    color: "#fff",
     left: 0,
     top: 0,
     zIndex: 1,

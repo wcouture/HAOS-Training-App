@@ -74,7 +74,7 @@ const stylesheets = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(170, 11, 11, 1)",
     alignItems: "center",
     justifyContent: "flex-start",
   },
@@ -83,17 +83,21 @@ const stylesheets = StyleSheet.create({
     textAlign: "center",
     fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 5,
-    marginTop: 30,
+    paddingTop: 20,
 
-    paddingBottom: 10,
-    borderBottomColor: "rgba(0,0,0,0.2)",
-    borderBottomWidth: 1,
-    width: "80%",
+    color: "#fff",
+
+    paddingBottom: 15,
+    borderBottomColor: "rgba(136, 12, 12, 1)",
+    borderBottomWidth: 2,
+    width: "100%",
   },
 
   ProgramList: {
     maxHeight: "100%",
-    width: "80%",
+    width: "100%",
+    backgroundColor: "#fff",
+
+    boxShadow: "1px 1px 5px 5px rgba(0, 0, 0, 0.2) inset",
   },
 });
