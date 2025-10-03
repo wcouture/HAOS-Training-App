@@ -83,17 +83,22 @@ const stylesheets = StyleSheet.create({
     textAlign: "center",
     fontSize: 28,
     fontWeight: "bold",
-    paddingTop: 20,
+    paddingTop: 35,
 
     color: "#fff",
 
-    paddingBottom: 15,
+    paddingBottom: 20,
     borderBottomColor: "rgba(136, 12, 12, 1)",
     borderBottomWidth: 2,
     width: "100%",
   },
 
   ProgramList: {
+    paddingTop: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: "100%",
+
     maxHeight: "100%",
     width: "100%",
     backgroundColor: "#fff",

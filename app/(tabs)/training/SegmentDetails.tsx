@@ -86,9 +86,10 @@ export default function SegmentDetails() {
               router.back();
             }}
           >
-            <IconSymbol size={28} name="chevron.left" color="black" />
+            <IconSymbol size={28} name="chevron.left" color="white" />
           </Pressable>
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
+        </View>
           <View style={stylesheet.dayList}>
             {programDays?.map((day, index) => {
               var completed = false;
@@ -116,7 +117,7 @@ export default function SegmentDetails() {
               );
             })}
           </View>
-        </View>
+        
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -127,13 +128,12 @@ const stylesheet = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(170, 11, 11, 1)",
   },
   HeaderContainer: {
     alignItems: "center",
     borderColor: "black",
     width: "80%",
-    marginBottom: 20,
     marginTop: 35,
   },
   HeaderText: {
@@ -141,13 +141,20 @@ const stylesheet = StyleSheet.create({
     fontWeight: 800,
     textAlign: "center",
     width: "100%",
+    paddingBottom: 20,
+    color: "white",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0,0,0,0.2)",
-    paddingBottom: 10,
   },
 
   dayList: {
     width: "100%",
+    height: "100%",
+    backgroundColor: "white",
+    boxShadow: "1px 1px 5px 5px rgba(0, 0, 0, 0.2) inset",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 20,
   },
 
   backButton: {

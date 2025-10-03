@@ -196,9 +196,10 @@ export default function SessionDetails() {
               router.back();
             }}
           >
-            <IconSymbol size={28} name="chevron.left" color="black" />
+            <IconSymbol size={28} name="chevron.left" color="white" />
           </Pressable>
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
+        </View>
           <View style={stylesheet.workoutList}>
             {circuits.map((circuit) => {
               return (
@@ -238,7 +239,6 @@ export default function SessionDetails() {
               );
             })}    
           </View>
-        </View>
         <CompleteWorkoutModal
           isVisible={modalVisible}
           setIsVisible={setModalVisible}
@@ -260,13 +260,12 @@ const stylesheet = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(170, 11, 11, 1)",
   },
   HeaderContainer: {
     alignItems: "center",
     borderColor: "black",
     width: "80%",
-    marginBottom: 20,
     marginTop: 35,
   },
   HeaderText: {
@@ -274,13 +273,20 @@ const stylesheet = StyleSheet.create({
     fontWeight: 800,
     textAlign: "center",
     width: "100%",
+    color: "white",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0,0,0,0.2)",
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
 
   workoutList: {
     width: "100%",
+    height: "100%",
+    backgroundColor: "white",
+    boxShadow: "1px 1px 5px 5px rgba(0, 0, 0, 0.2) inset",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 20,
   },
 
   backButton: {

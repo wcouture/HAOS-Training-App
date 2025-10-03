@@ -86,9 +86,10 @@ export default function ProgramDayDetails() {
               router.back();
             }}
           >
-            <IconSymbol size={28} name="chevron.left" color="black" />
+            <IconSymbol size={28} name="chevron.left" color="white" />
           </Pressable>
           <Text style={stylesheet.HeaderText}>{headerText}</Text>
+        </View>
           <View style={stylesheet.circuitList}>
             {sessions?.map((session, index) => {
               var completed = false;
@@ -117,7 +118,7 @@ export default function ProgramDayDetails() {
               );
             })}
           </View>
-        </View>
+        
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -128,27 +129,33 @@ const stylesheet = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(170, 11, 11, 1)",
   },
   HeaderContainer: {
     alignItems: "center",
     borderColor: "black",
     width: "80%",
-    marginBottom: 20,
     marginTop: 35,
   },
   HeaderText: {
     fontSize: 28,
     fontWeight: 800,
     textAlign: "center",
+    color: "white",
     width: "100%",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0,0,0,0.2)",
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
 
   circuitList: {
     width: "100%",
+    backgroundColor: "white",
+    height: "100%",
+    boxShadow: "1px 1px 5px 5px rgba(0, 0, 0, 0.2) inset",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 20,
   },
 
   backButton: {
