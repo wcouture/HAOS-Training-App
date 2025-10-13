@@ -23,7 +23,9 @@ export default function Login() {
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.PageView}>
         <View style={stylesheet.PageRow}>
-          <Text style={stylesheet.MainTitle}>Login</Text>
+          <View style={stylesheet.HeaderSection}>
+            <Text style={stylesheet.MainTitle}>Login</Text>
+          </View>
         </View>
         <View style={stylesheet.PageRow}>
           <Text style={stylesheet.InputLabel}>Email</Text>
@@ -68,14 +70,24 @@ const stylesheet = StyleSheet.create({
   },
 
   HeaderSection: {
-    maxWidth: "65%",
+    display: "flex",
+    justifyContent: "center",
+    height: "100%",
+    width: "75%",
   },
 
   MainTitle: {
-    textAlign: "center",
-    fontSize: 28,
+    textAlign: "left",
+    width: "100%",
+    color: "#9b3232ff",
+    fontSize: 48,
+    fontStyle: "italic",
     fontWeight: 800,
+    paddingLeft: 25,
+    paddingBottom: 10,
     marginBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: "#9b3232ff"
   },
   SubTitle: {
     textAlign: "center",
@@ -91,40 +103,45 @@ const stylesheet = StyleSheet.create({
   ActionsContainer: {
     alignItems: "center",
     gap: 20,
-    paddingTop: 50,
+    paddingTop: 0,
     paddingBottom: 50,
   },
 
   ActionButton: {
-    borderWidth: 3,
+    borderWidth: 4,
     borderStyle: "solid",
-    borderColor: "#C00",
-    maxWidth: "50%",
+    borderColor: "#9b3232ff",
+    borderRadius: 25,
+    maxWidth: "65%",
   },
 
   ActionButtonText: {
     textAlign: "center",
-    color: "#C00",
+    color: "#9b3232ff",
     fontWeight: 800,
-    fontSize: 20,
-    padding: 10,
+    fontSize: 30,
+    padding: 20,
   },
 
   InputField: {
-    borderWidth: 2,
-    borderRadius: 10,
+    borderWidth: 3,
+    borderRadius: 30,
     borderStyle: "solid",
-    borderColor: "#B00",
-    width: "50%",
-    fontSize: 20,
-    padding: 10,
+    borderColor: "#9b3232ff",
+    width: "65%",
+    fontSize: 26,
+    padding: 15,
     marginBottom: 50,
   },
   InputLabel: {
-    fontSize: 20,
-    fontWeight: 600,
-    marginBottom: 5,
-    width: "50%",
+    fontSize: 26,
+    fontWeight: 400,
+    fontStyle: "italic",
+    color: "rgba(71, 71, 71, 1)",
+    marginBottom: 10,
+    width: "65%",
     textAlign: "left",
+    borderBottomColor: "rgba(218, 218, 218, 1)",
+    borderBottomWidth: 2
   },
 });

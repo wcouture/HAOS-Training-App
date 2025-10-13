@@ -3,7 +3,7 @@ import { useEventListener } from "expo";
 import { router } from "expo-router";
 import { useVideoPlayer, VideoPlayerStatus, VideoView } from "expo-video";
 import React, { useEffect, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 
@@ -20,21 +20,16 @@ export default function LandingScreen() {
   });
 
   useEventListener(splashPlayer, 'statusChange', ({ status, error }) => {
-    console.log('Player status changed: ', status);
     setSplashScreenPlaying(status);
   });
 
   useEffect(() => {
-    if (splashScreenPlaying) {
-      return;
-    }
-
     CheckUserLogin(
       () => {
         setLoggedIn(true);
       },
       (error) => {
-        console.error(error);
+        //console.error(error);
       }
     );
   }, []);
@@ -51,6 +46,12 @@ export default function LandingScreen() {
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.PageView}>
         <View style={stylesheet.PageRow}>
+          <Image style={stylesheet.HAOSLogo} source={require("@/assets/images/HAOS-logo.png")}/>
+          
+        </View>
+        
+
+        <View style={stylesheet.PageRow}>
           <View style={stylesheet.HeaderSection}>
             <Text style={stylesheet.MainTitle}>HAOS</Text>
             <Text style={stylesheet.SubTitle}>Your #1 Training Team</Text>
@@ -59,6 +60,7 @@ export default function LandingScreen() {
             </Text>
           </View>
         </View>
+
         <View style={stylesheet.PageRow}>
           <View style={stylesheet.ActionsContainer}>
             <Pressable
@@ -83,8 +85,6 @@ export default function LandingScreen() {
             </Pressable>
           </View>
         </View>
-
-        <View style={stylesheet.PageRow}></View>
       </SafeAreaView>
     </SafeAreaProvider>);
     }
@@ -110,6 +110,15 @@ const stylesheet = StyleSheet.create({
     backgroundColor: "#000",
   },
 
+  HAOSLogo: {
+    width: 250,
+    height: 250,
+    tintColor: "black",
+    marginTop: 100,
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+
   PageView: {
     flex: 1,
     backgroundColor: "#fff",
@@ -123,6 +132,10 @@ const stylesheet = StyleSheet.create({
 
   HeaderSection: {
     maxWidth: "65%",
+    display: "flex",
+    justifyContent: "flex-start",
+    paddingTop: 60,
+    height: "100%"
   },
 
   MainTitle: {
@@ -133,36 +146,40 @@ const stylesheet = StyleSheet.create({
   },
   SubTitle: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 5,
   },
   SubText: {
     textAlign: "center",
-    fontSize: 14,
+    fontSize: 18,
   },
 
   ActionsContainer: {
     alignItems: "center",
-    gap: 20,
+    justifyContent: "flex-start",
+    height: "100%",
+    maxWidth: "65%",
+    gap: 35,
     paddingTop: 50,
     paddingBottom: 50,
   },
 
   ActionButton: {
-    borderWidth: 2,
-    borderRadius: 5,
+    borderWidth: 3,
+    borderRadius: 8,
     borderStyle: "solid",
     borderColor: "#444",
     backgroundColor: "#fff",
-    maxWidth: "50%",
+    width: "100%",
+    boxShadow: "1px 1px 5px 2px solid rga(0,0,0,0.3)"
   },
 
   ActionButtonText: {
     textAlign: "center",
     color: "#444",
     fontWeight: 400,
-    fontSize: 20,
-    padding: 5,
+    fontSize: 26,
+    padding: 20,
   },
 });
