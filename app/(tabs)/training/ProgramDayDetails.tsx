@@ -39,8 +39,14 @@ export default function ProgramDayDetails() {
   );
 
   useEffect(() => {
+    if (user.id == -1) return;
+
     // If user hasn't completed any circuits or data hasn't loaded yet, return
     user.completedSessions ??= [];
+
+    if (user.completedSessions.length == 0 || sessions.length == 0) {
+      return;
+    }
 
     // If this day already complete, return
     user.completedDays ??= [];
@@ -70,12 +76,17 @@ export default function ProgramDayDetails() {
           CheckUserLogin(() => {}, (error) => { console.log(error); });
         } else {
           console.log("Error completing day: " + response.status);
+          console.log(response.url)
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [sessions]);
+  }, [sessions, user]);
+
+  useEffect(() => {
+
+  }, [user]);
   return (
     <SafeAreaProvider>
       <SafeAreaView style={stylesheet.container}>

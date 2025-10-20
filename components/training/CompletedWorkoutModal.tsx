@@ -32,26 +32,28 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
     }
   };
 
-  const renderMetrics = (metric: number) => {
-    return(<>
+  const renderMetrics = (metric: number, index: number) => {
+    return(
+    <View key={index}>
       <Text style={stylesheet.ModalDataHeader}>
-        {getExerciseTypeString(workout?.trackingType) + ": "}
+        {getExerciseTypeString(workout?.trackingType_) + ": "}
       </Text>
       <Text style={stylesheet.ModalDataLabel}>
         {metric}
       </Text>
-    </>)
+    </View>)
   }
 
-  const renderTimeMetrics = (metric: number) => {
-    return(<>
+  const renderTimeMetrics = (metric: number, index: number) => {
+    return(
+    <View key={index}>
       <Text style={stylesheet.ModalDataHeader}>
         {"Time Spent: "}
       </Text>
       <Text style={stylesheet.ModalDataLabel}>
         {Math.floor(metric / 60)} : {String(metric % 60).padStart(3)} s
       </Text> 
-    </>)
+    </View>)
   }
 
   useEffect(() => {
@@ -85,11 +87,11 @@ export default function CompletedWorkoutModal(params: CompletedWorkoutParams) {
         </View>
         <View style={stylesheet.ModalInputSection}>
             {params.completedWorkout?.metrics?.map((metric, index) => {
-              if (workout.trackingType === WorkoutTrackingType.Time) {
-                return renderTimeMetrics(metric);
+              if (workout.trackingType_ === WorkoutTrackingType.Time) {
+                return renderTimeMetrics(metric, index);
               }
               else {
-                return renderMetrics(metric);
+                return renderMetrics(metric, index);
               }
             })}
         </View>
