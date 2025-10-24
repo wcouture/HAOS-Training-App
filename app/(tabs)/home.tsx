@@ -41,7 +41,7 @@ export default function HomeScreen() {
             <ScrollView style={styles.pageScrollView}>
             <View style={styles.exerciseDemoContainer}>
               {exercises?.map((exercise) => {
-                if (!exercise.showDemo) {
+                if (!exercise.showDemo || exercise.premiumDemo) {
                   return null;
                 }
 

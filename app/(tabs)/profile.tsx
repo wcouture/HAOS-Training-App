@@ -1,6 +1,5 @@
 import { UserAccount } from "@/Models/UserAccount";
 import { GetCurrentUser, LogoutUser } from "@/services/AccountService";
-import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
@@ -40,11 +39,11 @@ export default function Profile() {
         <View style={stylesheet.PageRow}>
           <Text style={stylesheet.PageTitle}>Member Details</Text>
           <View style={stylesheet.MemberDetailsContainer}>
-            <Image
+            {/* <Image
               source={require("@/assets/images/HAOS-logo.png")}
               placeholder={blurhash}
               style={stylesheet.MemberImage}
-            />
+            /> */}
             <View style={stylesheet.MemberInfoContainer}>
               <Text style={stylesheet.MemberName}>
                 {user?.firstName} {user?.lastName}

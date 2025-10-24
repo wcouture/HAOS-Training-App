@@ -15,7 +15,7 @@ export default function Login() {
         router.replace("/home");
       }, (msg) => {
         console.error(msg);
-        alert("Login failed: " + msg);
+        // alert("Login failed: " + msg);
       });
   };
 

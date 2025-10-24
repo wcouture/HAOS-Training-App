@@ -35,7 +35,7 @@ export default function LandingScreen() {
   }, []);
 
   useEffect(() => {
-    console.error(splashScreenPlaying)
+    // console.error(splashScreenPlaying)
     if (loggedIn && splashScreenPlaying == "idle") {
       router.dismissAll;
       router.replace("/home");
