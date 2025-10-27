@@ -50,7 +50,19 @@ export type Exercise = {
   demoUrl: string;
   showDemo: boolean;
   premiumDemo: boolean;
+  icon: ExerciseIcon;
 };
+
+export enum ExerciseIcon {
+    Dumbbell = 1,
+    RunningShoe = 2,
+    YogaMat = 3,
+    Swimming = 4,
+    JumpRope = 5,
+    Kettlebell = 6,
+    Barbell = 7,
+    Bicycle = 8
+}
 
 export enum WorkoutTrackingType {
   Reps = 1,
